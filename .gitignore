@@ -3,5 +3,10 @@ kg-mvp/out/
 __pycache__/
 *.pyc
 
+# web 服务的依赖与构建产物
+service/frontend/node_modules/
+service/frontend/dist/
+service/frontend/package-lock.json
+
 # 第三方研报 PDF:避免公开仓库的版权风险(如确认仓库为私有可移除本行)
 reference/
