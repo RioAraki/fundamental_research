@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="luxury">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甲醇报告方法论 × 根因图谱 · 对照与借鉴</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+<style>
+  .cell { min-width: 0; word-break: break-word; }
+  table td, table th { overflow-wrap:anywhere; word-break:break-word; }
+  b, strong { display: contents; font-weight: 700; }
+  pre.demo { white-space: pre-wrap; word-break: break-all; font-size: .74rem; line-height: 1.6;
+             background: #14120e; border-radius: .5rem; padding: .8rem; }
+</style>
+</head>
+<body class="bg-base-200 text-base-content">
+<main class="mx-auto w-full max-w-5xl p-5 lg:p-10 cell space-y-6">
+
+  <div class="hero bg-base-100 rounded-box border border-base-content/10">
+    <div class="hero-content text-center py-8 px-4">
+      <div class="max-w-3xl">
+        <div class="badge badge-soft badge-warning mb-3">文献研读 · 2026-07-04 · 可批注</div>
+        <h1 class="text-3xl font-bold leading-normal px-1">《甲醇基本面研究》方法论 × 我们的根因图谱</h1>
+        <p class="mt-3 text-base-content/70">兴证期货 2019《产业链基本面量化研究(一):CMTO 产业链初探》,32 页。核心路线:把基本面逻辑拆成<b>供给/需求/库存</b>三类因子 → 用<b>相关性检验 + 阈值遍历回测</b>验证每条逻辑是否长期有效 → 组合成单边/月差/跨品种策略。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-success"><span><b>一句话总评:这份报告是我们图谱的"定量验证层"教科书。</b>它和我们做的是同一件事的两半——我们把"利润是供给的调节阀"这类机制画成<b>带传导结构的白箱图</b>(但强度是拍脑袋的);它把同样的机制压成<b>单变量→价格的短路径因子</b>(丢了传导结构),然后用回测证明<b>每条机制长期有效并找出触发阈值</b>。它没有图、没有事件层、没有主题层;我们没有验证、没有阈值、没有 point-in-time 纪律。<b>把它的验证方法套在我们的边上,就是既定路线图里"强度校准"和"condition 参与推理"两步的具体做法。</b></span></div>
+
+  <!-- 1 报告方法论拆解 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">1. 报告方法论拆解(8 个可辨识的做法,附实证数字)</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>#</th><th>做法</th><th>内容与证据</th></tr></thead>
+      <tbody>
+        <tr><td>①</td><td><b>供需存三分法</b></td><td>因子只留三类:供给(开工率/生产利润/船运/进口利润)、需求(MTO 开工率与利润/传统下游开工率)、库存(华东/华南港口库存)。明确放弃"宏观相关因子回归预测价格"的老路,改为<b>从机制出发挑因子、用回测验证机制</b></td></tr>
+        <tr><td>②</td><td><b>高频代理替换低频真值</b> ⭐</td><td>海关进口是月度且滞后 15 天 → 用<b>日度船运数据</b>(覆盖进口 80%+)+ <b>日度进口利润</b>做代理;并验证代理有效性:进口利润 vs 月度进口量相关系数 0.52(p&lt;0.0001)</td></tr>
+        <tr><td>③</td><td><b>利润 = 价格的顶和底(双向阀)</b> ⭐</td><td>生产利润&lt;0 → 成本支撑 → 做多(遍历 K=0/-50/-100/-150 均正收益,胜率 59-86%);MTO 利润&lt;-1200 → 下游停车倒逼 → 做空(胜率 100%,"MTO 利润是甲醇价格上涨的达摩克利斯之剑")。<b>利润机制不是线性的,是阈值触发的</b></td></tr>
+        <tr><td>④</td><td><b>阈值遍历回测验证机制</b> ⭐⭐</td><td>对每条机制:遍历触发阈值(K)/回看窗口(X 期)/边界(Y%),看年化/回撤/夏普/胜率是否稳健。这就是"condition 字段怎么从文字变成数字"的答案</td></tr>
+        <tr><td>⑤</td><td><b>因子逐层叠加增强</b></td><td>库存单边:年化 11.4%/胜率 63.8% → 船运+进口利润:5.5%/61% → <b>船运+进口利润+库存:17.15%/夏普 1.96/胜率 67.5%</b>——供给侧信号必须叠加需求侧(库存)确认才质变,单边供给因子不够</td></tr>
+        <tr><td>⑥</td><td><b>信号冲突 = 不开仓</b> ⭐</td><td>发现"开工率-库存"信号与"生产成本"信号冲突时,把冲突时段的信号剔除不交易 → 胜率与夏普大幅提升。给了我们"多空冲突不裁决"之后的<b>行动语义:冲突即观望</b></td></tr>
+        <tr><td>⑦</td><td><b>Point-in-time 数据纪律</b> ⭐</td><td>统一日频、未更新沿用上期(防未来信息);建仓价用"数据可得时点之后"的价格(开工率周四收盘可得→用周四收盘价,库存周五→周五收盘价)</td></tr>
+        <tr><td>⑧</td><td><b>宏观干扰的自觉</b></td><td>最大回撤(2015.7-8)复盘:船运高+库存降、基本面偏多,但原油暴跌经烯烃拖垮甲醇——"基本面因子模型需关注宏观因子干扰导致暂时性失效"。另设计 MA-PP 跨品种套利(甲醇 vs MTO 开工率相对强弱)来<b>对冲掉宏观 beta</b></td></tr>
+      </tbody>
+    </table></div>
+  </div></div>
+
+  <!-- 2 对照 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">2. 逐项对照:报告 vs 我们的根因图谱</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>维度</th><th>甲醇报告(2019 因子路线)</th><th>我们(根因图谱三层)</th><th>判定</th></tr></thead>
+      <tbody>
+        <tr><td>知识表达</td><td>因子直连价格(开工率→价格),<b>传导结构是黑箱</b>,逻辑只存在于文字描述里</td><td>显式传导图(45/41 节点),每步有方向/时滞/强度/条件/证据,可点击解释</td><td class="text-success">我们领先</td></tr>
+        <tr><td>机制验证</td><td><b>相关性检验 + 阈值遍历回测</b>,每条机制有胜率/夏普背书</td><td>强度是先验拍脑袋(强0.9/中0.6/弱0.3),仅用历史案例定性对照</td><td class="text-error">报告领先 ⭐核心借鉴</td></tr>
+        <tr><td>条件/非线性</td><td>condition 全部数字化(利润&lt;-1200、船运破 14 期均值 5% 界),阈值经遍历验证</td><td>condition 是文字("利润窗口持续>1周"),尚不参与推理</td><td class="text-error">报告领先 ⭐核心借鉴</td></tr>
+        <tr><td>数据频率意识</td><td>高频代理原则 + point-in-time 纪律,工程化完整</td><td>signals 记了数据源和频率,但无代理关系标注、无可得时点纪律</td><td class="text-error">报告领先</td></tr>
+        <tr><td>事件/主题/时间维度</td><td>无。因子是连续读数,无事件层;2015 宏观失效只能事后归因,<b>无主题层去解释"为什么这段时间基本面不管用"</b></td><td>三层本体(变量/主题/事件)+ 回归特性 + 事件日志 + 分时段结论</td><td class="text-success">我们领先</td></tr>
+        <tr><td>冲突处理</td><td>冲突信号剔除不开仓(实证有效)</td><td>多空路径对照输出,不裁决,无行动语义</td><td>互补:采纳其行动版</td></tr>
+        <tr><td>输出形态</td><td>三种表达:单边 / 月差正反套 / 跨品种套利(MA-PP)</td><td>只输出单边方向(利多/利空)</td><td class="text-error">报告领先</td></tr>
+        <tr><td>可维护性/扩展</td><td>参数写死在回测里,换品种要重做;有过拟合风险(作者自认无杠杆无止损、系列第一篇)</td><td>KG-as-code,边表 git 化,新品种半天复制</td><td class="text-success">我们领先</td></tr>
+      </tbody>
+    </table></div>
+  </div></div>
+
+  <!-- 3 借鉴清单 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">3. 具体借鉴清单(5 项,可直接排进路线图)</h2>
+
+    <h3 class="font-bold mt-2">① 给关键边挂「因子规则 + 验证状态」——强度校准的具体方法</h3>
+    <p class="text-sm text-base-content/70">报告证明:一条机制边可以压缩成一条可回测的因子规则。给图里的强边(尤其带 condition 的)增加 factor_rule 与 validation 字段,校准就有了标准动作:相关性检验 → 阈值遍历 → 回填胜率。</p>
+    <div class="mockup-code text-xs"><pre><code># 以铜的"高价抑需"边为例(对照报告 3.2 节 MTO 利润做空)
+- {from: SHFE铜价格, to: 中国下游开工率, polarity: "-", lag: 1月内, strength: 中,
+   condition: "快涨期下游按需采购",
+   factor_rule: "候选规则:精废价差 > 历史 P90 且社库连续 2 周累积 → 看空信号",
+   validation: {status: 未回测, method: "阈值遍历(参照兴证甲醇报告 §3.2)", corr: null, win_rate: null}}
+# 校准后 strength 不再是拍脑袋:胜率>65% 且稳健 → 强;55-65% → 中;不稳健 → 弱或删边</code></pre></div>
+
+    <h3 class="font-bold mt-4">② signals 增加「高频代理」标注</h3>
+    <p class="text-sm text-base-content/70">报告的船运/进口利润 ↔ 海关月度进口,正是我们已有的 ITS 船调 ↔ 马来出口、SPPOMA ↔ MPOB 产量、买船数据 ↔ 海关进口的关系——但我们没显式标注谁是谁的代理、代理覆盖率多少。加 <code class="text-xs">proxy_of</code> 字段,agent 取数时自动优先高频代理、用低频真值定期校验。</p>
+
+    <h3 class="font-bold mt-4">③ 冲突的行动语义:冲突 = 观望 + 给出"何时能裁决"</h3>
+    <p class="text-sm text-base-content/70">保留"多空路径对照"的展示,但在结论层加一行行动建议:多空分接近(比值>0.5)→ <b>"信号冲突,按报告实证经验此时不开仓"</b>;并列出裁决信号(哪个数据先出来就能定方向——正是监测面板的用途)。</p>
+
+    <h3 class="font-bold mt-4">④ 输出形态扩展:单边之外,给月差与跨品种表达</h3>
+    <p class="text-sm text-base-content/70">报告每个因子都测了"单边 + 正反套"。我们的图天然支持:<b>落在库存/到港节奏上的路径 → 月差表达</b>(近月强弱),<b>跨品种价差节点(豆棕价差、MA-PP)上的路径 → 套利表达</b>(顺带对冲宏观 beta,正是报告用 MA-PP 套利"抵消宏观因素"的思路)。推理输出加一个"建议表达方式"字段即可。</p>
+
+    <h3 class="font-bold mt-4">⑤ Point-in-time 纪律写进数据接入规范</h3>
+    <p class="text-sm text-base-content/70">将来挂真实数据(MPOB/SMM/NOAA)时:每个指标登记"发布时点",事件日志的 time 用<b>信息可得时刻</b>而非所述事实时刻;回验历史行情时禁止未来信息。这条现在立规矩,成本最低。</p>
+  </div></div>
+
+  <!-- 4 互补关系 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">4. 两条路线的互补关系(一张图说清)</h2>
+    <pre class="demo">甲醇报告(2019 因子路线)                 我们(根因图谱三层)
+────────────────────────                ────────────────────────
+机制 → 压成单变量因子                    机制 → 展开成传导图
+      (黑箱,但可回测)                        (白箱,但未验证)
+
+  开工率↑+库存↑ ⇒ 做空                    根因 → 边(方向/时滞/强度/条件)
+  利润<-1200 ⇒ 做空                            → 事件激活 → 分时段结论
+  船运破界+利润>-300+库存↑ ⇒ 做空
+        │                                        │
+        │  它缺:传导结构、事件层、主题层、        │  我们缺:验证、阈值、
+        │  可解释性、跨品种复用                   │  point-in-time、月差表达
+        ▼                                        ▼
+        └────────── 合体:图谱的每条关键边 ──────────┘
+                    = 一条可回测的因子规则
+        白箱结构负责解释与维护,回测负责校准强度与阈值
+        (报告 2015 宏观失效的教训,恰好由我们的主题层解释:
+         当"宏观根因主题活跃"时,商品自身基本面路径要打折)</pre>
+  </div></div>
+
+  <!-- 5 行动 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">5. 建议排期(并入既有路线图)</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>#</th><th>动作</th><th>并入哪一步</th><th>工作量</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>schema 加 factor_rule / validation / proxy_of 三个字段(空值即可,先立规范)</td><td>随下次边表修订</td><td>1 小时</td></tr>
+        <tr><td>2</td><td>冲突行动语义 + 表达方式建议(单边/月差/跨品种)进推理输出</td><td>推理器小改</td><td>半天</td></tr>
+        <tr><td>3</td><td>Point-in-time 规范写进数据接入文档</td><td>"挂真实数据"之前</td><td>1 小时</td></tr>
+        <tr><td>4</td><td><b>选 2-3 条强边做首批回测校准试点</b>(建议:棕榈油"进口利润→买船"、铜"精废价差→替代"、铜"高价→开工率"),方法照抄报告 §3(相关性检验+阈值遍历)</td><td>= 路线图"历史回验"的具体化</td><td>数天,需行情数据</td></tr>
+        <tr><td>5</td><td>甲醇本身:该报告的产业逻辑(煤制成本支撑/MTO 利润封顶/港口库存/船运进口)可直接转成 methanol.yaml——它几乎给好了骨架边表和阈值</td><td>新品种扩展时</td><td>半天(方法论已验证)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-sm text-base-content/70 mt-2">注意报告局限,借鉴时留心:2019 年数据(MTO 占比、进口依存度等需更新);参数遍历取最优有过拟合风险(作者自认是系列第一篇、无杠杆无止损);因子直连价格的短路径丢机制——所以是"借它的验证方法",不是"抄它的参数"。</p>
+  </div></div>
+
+</main>
+</body>
+</html>

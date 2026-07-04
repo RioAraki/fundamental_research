@@ -1,0 +1,452 @@
+# 中国沪铜期货(SHFE CU)基本面因果知识图谱 · 事实源(KG-as-code)
+# 方法论同 palm_oil.yaml v0.2:
+#   根因 = 中性状态量(direction 说明 +/− 语义),图存机制、新闻定方向(±1 冲击);
+#   根因定性、新闻和数据定量(signals = 监测新闻关键词 + 数据源)。
+meta:
+  commodity: 铜(SHFE CU)
+  version: "0.1"
+  updated: "2026-07-03"
+  标的: "上期所阴极铜:GB/T 467 A级铜(≥99.95%);5吨/手;主力按月序滚动(近月化)"
+  定价链: "矿端 → TC/RC → 冶炼 → 精铜供给 ⊕ 废铜 ⊕ 进口(沪伦比值) → 三层库存 ⇄ 需求 → SHFE;LME 定锚、COMEX 制造扰动"
+
+nodes:
+  # ══════ 根因 · 矿端 ══════
+  - id: 矿端供给扰动率
+    type: 根因·供给
+    direction: "+ = 扰动加剧(大矿罢工/事故/政令关停) / − = 扰动平息、复产超预期"
+    temporal:
+      reversion: 事件回收型
+      theme: {name: 2026供给缺口, status: 活跃, since: "2025.9",
+              note: "Grasberg+Kamoa+El Teniente 多事件喂养;单一事件退场主题不死"}
+    note: "单个头部矿山(Escondida 128万吨/Grasberg 82万吨)就占全球 3-6%;价格反应分两段:事件当天情绪定价 + 实体供需 3-9 个月兑现"
+    case: "2023.11 Cobre Panamá 违宪关停(全球~1.5%);2025.9 Grasberg 泥浆事故宣布不可抗力、2026 减产 35%,LME 2025.10 创 $11,200 新高"
+    signals:
+      news: [罢工, "force majeure", "mine strike", 泥石流, 矿山关停, "copper mine disruption"]
+      data: ["FCX/First Quantum/Codelco 公司公告", "ICSG 月度矿产量", "Cochilco 智利月度产量"]
+  - id: 矿山资本开支与品位
+    type: 根因·结构
+    direction: "+ = capex 周期启动/大项目投产(Kamoa、QB2) / − = 品位下滑、capex 收缩、项目延期"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: 铜长牛/结构性短缺, status: 活跃, since: "2023",
+              note: "借尸还魂型:每逢矿端事件被重新点燃,炒完又睡"}
+    note: "慢变量:全球平均品位从 1.5% 降到 0.6-0.7%,capex 2013 年见顶后未恢复;机构测算 2030s 初年度缺口可超 600 万吨——'铜长牛'叙事与 TC 崩塌的共同根源"
+    case: "Codelco 2022 年产量创 25 年新低(品位劣化+项目延误)"
+    signals:
+      news: ["copper capex", "ore grade decline", 铜矿资本开支, 新矿投产]
+      data: ["Wood Mackenzie/S&P Global 矿业报告", "头部矿企年报", "Cochilco"]
+  - id: 资源国政治风险
+    type: 根因·政策
+    direction: "+ = 风险上升(动乱/加税/修宪/出口禁令/社区封路) / − = 税制落地、局势缓和"
+    temporal:
+      reversion: 事件回收型
+      theme: {name: 资源民族主义, status: 降温, since: "2023",
+              note: "巴拿马/秘鲁高峰后降温;复活条件=新的国有化/加税/禁令"}
+    note: "即期打断运输生产(周-月),中期压制 capex 意愿(1-5 年)"
+    case: "秘鲁 2022-23 动乱威胁全国 30% 铜产量;智利 2023 新权利金法(综合税负上限 46.5%);巴拿马 2023.11 判 First Quantum 合同违宪直接关矿"
+    signals:
+      news: ["Peru protest", "Las Bambas blockade", "Chile royalty", 秘鲁封路, 智利权利金, 刚果金出口]
+      data: ["当地媒体/Reuters", "Verisk 政治风险评级"]
+  - id: 矿区水电约束
+    type: 根因·供给
+    direction: "+ = 约束加剧(智利大旱/赞比亚限电/淡化厂许可被拒) / − = 水电供给恢复"
+    temporal:
+      reversion: 事件回收型
+      theme: {name: 缺水缺电限产, status: 休眠, since: "2024",
+              note: "2024 赞比亚限电后退烧;厄尔尼诺年易复活"}
+    note: "矿业占赞比亚全国用电约一半;智利矿山依赖海水淡化"
+    case: "2024 赞比亚百年一遇干旱,政府要求矿山削减 40% 常规用电"
+    signals:
+      news: ["Zambia power crisis", "drought Chile mining", 赞比亚限电, 海水淡化许可]
+      data: ["ZESCO 公告", "Cochilco 水资源报告"]
+
+  # ══════ 根因 · 冶炼/废铜 ══════
+  - id: 中国冶炼产能扩张
+    type: 根因·结构
+    direction: "+ = 新产能集中投产(抢矿) / − = 产能出清、CSPT 联合减产落实"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: 冶炼减产/负TC危机, status: 活跃, since: "2024",
+              note: "反复横跳:减产公告点燃→产量不兑现证伪→TC 新低再点燃"}
+    note: "中国冶炼产能 2025 约 1600 万吨、占全球一半;2025 年政策首次'严控铜冶炼新增产能'"
+    case: "2023-2025 中国冶炼扩产是 TC 崩盘主因;CSPT 2025.11 宣布 2026 减产 10%,但 2026 年 1-4 月产量实际同比 +7.4%(减产未兑现)"
+    signals:
+      news: [冶炼新扩建, "smelter capacity China", CSPT 减产]
+      data: ["SMM 冶炼厂月度调研", "统计局精炼铜产量(月中)"]
+  - id: 硫酸价格
+    type: 根因·供给
+    direction: "+ = 硫酸涨价(副产收入托住冶炼利润) / − = 硫酸跌价/胀库"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 酸养冶炼, status: 活跃, since: "2025",
+              note: "副产收入撑住负 TC 下的产量;硫酸转跌则减产逻辑激活"}
+    note: "每吨精铜副产 3-4 吨硫酸,另回收金银;副产收入是'TC 归零但产量仍创新高'的直接原因"
+    case: "中国硫酸价 2.5 年涨约 5 倍(464→1045 元/吨),2025 年为冶炼厂贡献约 $15 亿——'是酸不是铜在养活冶炼厂'"
+    signals:
+      news: [硫酸价格, "sulphuric acid smelter"]
+      data: ["SMM/百川盈孚硫酸价格(日/周)"]
+  - id: 废铜供给可得性
+    type: 根因·供给
+    direction: "+ = 进口顺畅、拆解出货充足 / − = 政策收紧、中美关税断美废、低价惜售"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 美废断流, status: 降温, since: "2025",
+              note: "关税重构贸易流后市场已适应;新关税事件可复活"}
+    note: "再生铜占中国铜供应约 32%(2025 约 380 万吨);既是冶炼冷料又直接替代精铜"
+    case: "2025 中国对美废铜加 34% 关税,自美进口 1-5 月同比 -53%,日本取代美国成第一大来源"
+    signals:
+      news: [废铜进口, "copper scrap", 精废价差, 再生铜政策]
+      data: ["海关废铜进口(月)", "SMM 精废价差(日)"]
+
+  # ══════ 根因 · 需求 ══════
+  - id: 中国电网投资
+    type: 根因·需求
+    direction: "+ = 国网/南网投资上调、特高压+配网集中招标 / − = 投资低于计划、招标延后"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: 电网超级周期/十五五4万亿, status: 活跃, since: "2024",
+              note: "每年 1 月国网计划公布日是季节性信号日"}
+    note: "中国铜消费第一大项(电力口径占 45%+);投资到用铜时滞 3-12 个月"
+    case: "国网 2024 年投资首超 6000 亿、2025 超 6500 亿、'十五五'约 4 万亿(+40%)——2024-25 铜需求韧性的最大支柱"
+    signals:
+      news: [国家电网投资, 特高压招标, "grid investment China"]
+      data: ["能源局电网工程投资完成额(月)", "国网年度计划(每年 1 月)"]
+  - id: 地产竣工景气
+    type: 根因·需求
+    direction: "+ = 竣工回升(保交楼) / − = 竣工负增长(2022-2025 常态)"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: 地产链坍塌, status: 休眠, since: "2023",
+              note: "2021-22 交易主线,已充分计价;复活条件=超预期政策反转"}
+    note: "建筑电线/水管/五金占消费约 9%,并联动家电"
+    case: "2022 地产下行+疫情是沪铜 7.7万→5.34万 的国内侧原因之一"
+    signals:
+      news: [房屋竣工面积, 保交楼]
+      data: ["统计局房地产开发数据(月中)"]
+  - id: 新能源车产销
+    type: 根因·需求
+    direction: "+ = NEV 产销高增 / − = 补贴退坡、销量失速"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: 新能源革命, status: 降温, since: "2024",
+              note: "增速换挡后叙事钝化;月度数据仍是需求核心输入"}
+    note: "纯电单车用铜约 80kg(燃油车 4 倍)+充电桩;地产下行期的核心对冲项"
+    case: "中国 NEV 销量 2021-2024 从 352 万辆升至 1286 万辆"
+    signals:
+      news: [新能源汽车产销, "EV sales China"]
+      data: ["中汽协(每月 11 日)", "乘联会(月初)"]
+  - id: 光伏风电装机
+    type: 根因·需求
+    direction: "+ = 抢装潮/大基地并网 / − = 消纳受限、装机退坡"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: 绿电抢装, status: 降温, since: "2024",
+              note: "政策节点前的抢装潮会阶段性点燃"}
+    note: "光伏每 GW 用铜约 4000 吨,风电约 5400 吨+(海风含海缆更高)"
+    case: "2024 中国光伏新增 277GW→用铜约 110 万吨"
+    signals:
+      news: [光伏新增装机, 风电装机]
+      data: ["国家能源局(月)"]
+  - id: 数据中心算力基建需求
+    type: 根因·需求
+    direction: "+ = hyperscaler capex 上调、数据中心+配套电网扩建 / − = AI capex 证伪、缩减"
+    temporal:
+      reversion: 趋势累积型
+      theme: {name: AI算力扩建, status: 活跃, since: "2023",
+              note: "变量 2015 年就存在但太小;AI 主题使其跨过实质性阈值入图;capex 证伪则主题退烧、变量仍在"}
+    note: "2025-26 核心增量叙事:数据中心内部用铜 + 更大头的电网增容;叙事即期定价、实体需求 6-24 个月"
+    case: "S&P 估数据中心用铜 2025 年 110 万吨→2040 年 250 万吨;单个超大型 IDC 可达 5 万吨"
+    signals:
+      news: ["AI data center copper", "hyperscaler capex", 数据中心用铜]
+      data: ["四大云厂季度 capex 指引", "S&P/Macquarie 专题报告"]
+  - id: 家电产销出口
+    type: 根因·需求
+    direction: "+ = 空调排产高增、以旧换新、出口抢单 / − = 内销转弱、海外去库"
+    temporal:
+      reversion: 季节周期型
+      theme: {name: 以旧换新/抢出口, status: 休眠,
+              note: "常规跟踪项,少独立成主题;3-6 月排产旺季"}
+    note: "铜管 80%+ 用于空调;排产领先 1-2 个月,3-6 月旺季"
+    signals:
+      news: [空调排产, 家电以旧换新]
+      data: ["产业在线月度排产", "海关家电出口(月)"]
+  - id: 海外制造业PMI
+    type: 根因·宏观
+    direction: "+ = 美欧 PMI 扩张、补库周期 / − = 连续收缩"
+    temporal:
+      reversion: 事件回收型
+      theme: {name: 全球补库交易, status: 降温,
+              note: "景气冲击约数月均值回归"}
+    note: "海外需求+中国铜材出口的领先指标(领先 1-3 个月)"
+    signals:
+      news: ["manufacturing PMI copper"]
+      data: ["ISM(月初)", "标普全球 PMI"]
+
+  # ══════ 根因 · 宏观 ══════
+  - id: 美联储政策立场
+    type: 根因·宏观
+    direction: "+ = 紧缩(加息/缩表/鹰派) / − = 宽松(降息/鸽派转向)"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 宽松周期交易, status: 活跃, since: "2024",
+              note: "铜的金融属性常年在线;FOMC 节点脉冲"}
+    note: "铜是'铜博士',金融属性常压倒产业属性;FOMC 决议即期定价,实体传导 6-12 个月"
+    case: "2022.3-7 激进加息,LME 从纪录 $10845 跌至 $6955(-36%),沪铜 7.7万→5.34万"
+    signals:
+      news: ["Fed rate", FOMC, 点阵图]
+      data: ["FOMC 日程(年 8 次)", "CME FedWatch"]
+  - id: 美元指数
+    type: 根因·宏观
+    direction: "+ = 美元走强 / − = 走弱"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 美元周期, status: 活跃,
+              note: "宏观主题的日频表达通道"}
+    note: "美元计价+新兴市场购买力双通道;人民币贬值会部分对冲沪铜跌幅(比价上移)"
+    case: "2022.3-9 DXY 98→114,同期 LME 铜 -30%+"
+    signals: {news: [美元指数, DXY], data: ["DXY(实时)", "FRED"]}
+  - id: 中国宏观刺激力度
+    type: 根因·政策
+    direction: "+ = 政治局会议/财政加码、降准降息 / − = 政策定力、刺激不及预期"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 政策市/稳增长, status: 活跃, since: "2024.9",
+              note: "政治局会议节点脉冲式活跃"}
+    note: "预期通道即期定价(沪强伦弱、比值上移);落地 1-6 个月后经基建/电网/家电兑现"
+    case: "2024.9.24 一揽子政策后沪铜一周反弹逾 5%"
+    signals:
+      news: [政治局会议, 稳增长, "China stimulus"]
+      data: ["政治局会议(4/7/12 月)+两会", "社融/M1(月)"]
+  - id: 全球衰退预期
+    type: 根因·宏观
+    direction: "+ = 衰退概率上调(曲线倒挂/PMI 崩/危机) / − = 软着陆共识"
+    temporal:
+      reversion: 事件回收型
+      theme: {name: 衰退交易, status: 休眠, since: "2022",
+              note: "软着陆共识后休眠;曲线倒挂/危机事件可瞬间复活"}
+    note: "纯预期变量,直接打铜的'经济晴雨表'属性"
+    case: "2022.7 衰退恐慌周,铜单周最大跌幅为疫情以来之最、跌破 $7000"
+    signals:
+      news: ["recession fears copper", 衰退预期]
+      data: ["美债利差(FRED)", "彭博衰退概率调查"]
+
+  # ══════ 根因 · 政策/贸易 ══════
+  - id: 美国铜进口关税
+    type: 根因·政策
+    direction: "+ = 关税范围扩大/税率提高(含精炼铜) / − = 豁免、推迟、缩小范围"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 232关税/库存堰塞湖, status: 降温, since: "2025.2",
+              note: "7.30 精炼铜豁免后退烧;2027 分阶段征税留尾巴(假死可复活)"}
+    note: "经 COMEX-LME 价差与全球库存搬运传导;精炼铜是否在列是关键;2027.1 起精炼铜或分阶段 15%→30%,留长期尾部"
+    case: "2025 全程:2月启动 232 调查→COMEX 溢价走扩、全球铜搬美国→7.8 宣布 50% 当日 COMEX +13%、溢价纪录 $2520→7.30 精炼铜豁免,COMEX 单日暴跌 20%+、溢价归零"
+    signals:
+      news: ["Section 232 copper", "copper tariff", "COMEX LME arb"]
+      data: ["白宫/Federal Register 公告", "COMEX-LME 价差(日)"]
+  - id: 国储收抛储
+    type: 根因·政策
+    direction: "+ = 收储(托底信号+移走现货) / − = 抛储(压过热+投放现货)"
+    temporal:
+      reversion: 事件回收型
+      theme: {name: 收储托底, status: 活跃, since: "2026",
+              note: "铜正式纳入国家储备并扩容"}
+    note: "量级小(每批数万吨)但信号意义强;收储传闻即期定价"
+    case: "2021.6.16 宣布抛储当日沪铜 -2.66%;2026 年铜正式纳入国家储备并扩大精炼铜储备"
+    signals:
+      news: [国储, 收储, 抛储, "SRB copper"]
+      data: ["国家粮食和物资储备局公告", "路透独家"]
+
+  # ══════ 根因 · 市场结构 ══════
+  - id: LME注销仓单占比
+    type: 根因·市场
+    direction: "+ = 注销占比飙升(提货预期,挤仓前兆) / − = 回落正常"
+    temporal:
+      reversion: 快速重置型
+      theme: {name: 挤仓/逼空, status: 休眠,
+              note: "低库存环境下随时点燃(2021.10/2024.5)"}
+    note: "库存低位时,注销仓单骤升常引发挤仓行情"
+    case: "2021.10 LME 可用库存 1.4 万吨(1974 年来最低)、cash-3M back 破纪录 $1103.5"
+    signals:
+      news: ["cancelled warrants", 注销仓单, 挤仓]
+      data: ["LME 每日库存/注销仓单"]
+  - id: COMEX库存水平
+    type: 根因·市场
+    direction: "+ = 库存充裕 / − = 库存极低(叠加净多拥挤易逼空)"
+    temporal:
+      reversion: 状态保持型
+      theme: {name: 美国库存堰塞湖, status: 降温, since: "2025",
+              note: "232 搬库后的存量问题"}
+    note: "232 关税后 COMEX 成全球库存分布的关键变量(2025 囤至 65 万吨纪录)"
+    case: "2024.5 COMEX 超低库存逼空,COMEX-LME 价差盘中超 $1000,5.20 三市齐创新高、沪铜 88940 元历史最高"
+    signals:
+      news: ["COMEX squeeze", 逼空]
+      data: ["CME 每日库存"]
+  - id: 基金净持仓
+    type: 根因·市场
+    direction: "+ = 管理基金净多创高(动量+拥挤) / − = 净空极值(反转燃料)"
+    temporal:
+      reversion: 快速重置型
+      theme: {name: 资金动量, status: 活跃,
+              note: "周度 COT 数据,拥挤度快速轮动"}
+    note: "放大器不是驱动;极端持仓是反向挤压风险"
+    case: "2024.5 COMEX 逼空本质是基金大举做多+空头被挤"
+    signals:
+      news: ["CFTC net long copper", 基金持仓]
+      data: ["CFTC COT(周五)", "LME COT(周二)"]
+
+  # ══════ 中间变量 ══════
+  - {id: 铜精矿供给, type: 供给指标, note: "全球矿产量约 2300 万吨;中国精矿对外依存度 77%+"}
+  - {id: TC/RC加工费, type: 价差, note: "矿山付给冶炼厂的加工费,'矿紧'最灵敏温度计,领先精铜短缺 6-12 个月;长单 2024 $80→2025 $21.25→2026 $0,现货 2024 末转负"}
+  - {id: 冶炼利润, type: 价差, note: "= TC/RC + 硫酸 + 金银副产 − 加工成本"}
+  - {id: 中国精铜产量, type: 供给指标, note: "2024 年 1364 万吨,占全球 49%"}
+  - {id: 全球精铜供给, type: 供给指标}
+  - {id: 精废价差, type: 价差, note: "精铜-光亮废铜价差;走扩→下游转用废铜,铜价内生稳定器"}
+  - {id: 再生铜替代, type: 需求指标, note: "废铜对精铜的替代量"}
+  - {id: 中国终端铜需求, type: 需求指标, note: "电网+新能源 vs 地产+家电的加权;中国占全球消费 58%"}
+  - {id: 海外终端铜需求, type: 需求指标}
+  - {id: 中国下游开工率, type: 需求指标, note: "线缆/铜杆开工率(SMM 周度),真实需求体温计"}
+  - {id: 中国社会库存, type: 供给指标, note: "SMM 周一/周四发布;+SHFE 仓单+保税区=中国显性库存"}
+  - {id: 全球显性库存, type: 供给指标, note: "SHFE+LME+COMEX+保税;低库存时价格弹性放大"}
+  - {id: LME升水结构, type: 价差, note: "cash-3M back/contango;back 走陡=现货紧/挤仓态"}
+  - {id: COMEX-LME价差, type: 价差, note: "关税与逼空的表达场;决定全球库存流向"}
+  - {id: 沪伦比值, type: 价差, note: "SHFE/LME,中枢约 8;比值高→进口窗口开(洋山溢价为同步信号)"}
+  - {id: 进口流入, type: 供给指标, note: "保税区清关+报关进口,窗口打开后 2-6 周到货"}
+  - {id: LME铜价格, type: 价格, note: "全球定价锚(3M 美元/吨);2025.10 纪录 $11200+"}
+  - {id: SHFE铜价格, type: 价格, note: "沪铜主力;2024.5.20 历史高点 88940 元/吨"}
+
+edges:
+  # ── 矿端 → 精矿 → TC ──
+  - {from: 矿端供给扰动率, to: 铜精矿供给, polarity: "-", lag: 0-3月, strength: 强,
+     condition: "大矿(>1% 全球供给)才显著", evidence: "Grasberg 2026 减产 35%、累计 -60 万吨;Cobre Panamá 关停 -1.5%"}
+  - {from: 矿端供给扰动率, to: LME铜价格, polarity: "+", lag: 当日, strength: 中,
+     condition: "低库存时放大",
+     rationale: "两段行情:事件当天是情绪/预期定价(这条边);实体传导走'精矿→TC→冶炼→精铜'链,要 3-9 个月兑现。2023.11 巴拿马关停当天价格反应温和(~$8400),但 3 个月后 TC 崩至负值——不把两条通道分开,就无法解释'大事件当天不涨、半年后大涨'",
+     evidence: "2025.9 Grasberg 事故后 LME 一个月内创 $11200 纪录(低库存放大)"}
+  - {from: 矿山资本开支与品位, to: 铜精矿供给, polarity: "+", lag: 3-10年, strength: 强,
+     evidence: "capex 2013 见顶未恢复;品位 1.5%→0.6-0.7%"}
+  - {from: 资源国政治风险, to: 铜精矿供给, polarity: "-", lag: 0-3月, strength: 中,
+     condition: "封路/禁令/关停期间", evidence: "秘鲁 2022-23 动乱威胁 30% 产量"}
+  - {from: 资源国政治风险, to: 矿山资本开支与品位, polarity: "-", lag: 多年, strength: 中,
+     evidence: "智利权利金法造成近五年投资不确定"}
+  - {from: 矿区水电约束, to: 铜精矿供给, polarity: "-", lag: 1-6月, strength: 中,
+     evidence: "2024 赞比亚限电 40%"}
+  - {from: 铜精矿供给, to: TC/RC加工费, polarity: "+", lag: 1-3月, strength: 强,
+     evidence: "巴拿马关停→3 个月后现货 TC 崩至负值"}
+  - {from: 中国冶炼产能扩张, to: TC/RC加工费, polarity: "-", lag: 6-24月, strength: 强,
+     condition: "精矿增速 < 冶炼增速", evidence: "2023-25 扩产是 TC 崩盘主因"}
+
+  # ── 冶炼(含 R4 负反馈环)──
+  - {from: TC/RC加工费, to: 冶炼利润, polarity: "+", lag: 即时, strength: 强}
+  - {from: 硫酸价格, to: 冶炼利润, polarity: "+", lag: 即时, strength: 中,
+     rationale: "副产是冶炼命门:每吨精铜副产 3-4 吨硫酸+金银;2025 年硫酸为中国冶炼贡献约 $15 亿,这是'TC 归零产量仍创新高'的直接原因——所以判断减产要看'TC+硫酸+金银'的综合利润,只盯 TC 会一直误判",
+     evidence: "硫酸 2.5 年涨 5 倍(464→1045 元/吨)"}
+  - {from: 冶炼利润, to: 中国精铜产量, polarity: "+", lag: 1-6月, strength: 中,
+     condition: "持续深亏才减产;副产收入与地方保产会钝化",
+     rationale: "为什么是'中'不是'强':CSPT 2025.11 承诺减产 10%,2026 年 1-4 月产量却同比 +7.4%——冶炼减产承诺屡不兑现,因为副产收入+地方政府保产+抢长单矿的博弈都在钝化利润→产量的传导。这条边的强度是全图最值得研究员校准的参数之一",
+     evidence: "CSPT 减产未兑现"}
+  - {from: 中国冶炼产能扩张, to: 中国精铜产量, polarity: "+", lag: 12-24月, strength: 强}
+  - {from: 中国精铜产量, to: TC/RC加工费, polarity: "-", lag: 1-3月, strength: 中,
+     condition: "R4 负反馈环:减产→矿需求降→TC 回升→利润修复→复产",
+     evidence: "2025-26 CSPT 减产博弈的核心逻辑"}
+  - {from: 废铜供给可得性, to: 中国精铜产量, polarity: "+", lag: 1-2月, strength: 中,
+     evidence: "冷料/阳极板补充冶炼原料"}
+  - {from: 中国精铜产量, to: 全球精铜供给, polarity: "+", lag: 即时, strength: 强,
+     evidence: "中国占全球 49%"}
+  - {from: 全球精铜供给, to: 全球显性库存, polarity: "+", lag: 1-3月, strength: 强}
+
+  # ── 废铜替代(R1 负反馈环)──
+  - {from: SHFE铜价格, to: 精废价差, polarity: "+", lag: 即时, strength: 强,
+     evidence: "废铜报价有粘性,铜价快涨时价差走扩"}
+  - {from: 精废价差, to: 再生铜替代, polarity: "+", lag: 2周-2月, strength: 中,
+     condition: "废铜可得时(2025 美废断流时失效)"}
+  - {from: 废铜供给可得性, to: 再生铜替代, polarity: "+", lag: 1月内, strength: 中}
+  - {from: 再生铜替代, to: 中国终端铜需求, polarity: "-", lag: 即时, strength: 中,
+     condition: "R1 负反馈环:铜价↑→替代↑→精铜需求↓→抑制涨幅",
+     evidence: "精废价差是铜价内生稳定器"}
+
+  # ── 需求 ──
+  - {from: 中国电网投资, to: 中国终端铜需求, polarity: "+", lag: 3-12月, strength: 强,
+     rationale: "为什么是'强':电力口径占中国铜消费 45%+,是第一大项且逆周期(政策定投资);'十五五'国网约 4 万亿(+40%)是 2024-26 需求韧性最大支柱。注意时滞:投资计划→招标→交货要 3-12 个月,年初国网计划公布日是关键信号日",
+     evidence: "国网 2024 首超 6000 亿、2025 超 6500 亿"}
+  - {from: 地产竣工景气, to: 中国终端铜需求, polarity: "+", lag: 0-3月, strength: 中,
+     evidence: "2022 竣工塌方是沪铜暴跌的国内侧原因"}
+  - {from: 新能源车产销, to: 中国终端铜需求, polarity: "+", lag: 1月内, strength: 中,
+     evidence: "纯电单车 80kg≈燃油车 4 倍"}
+  - {from: 光伏风电装机, to: 中国终端铜需求, polarity: "+", lag: 0-3月, strength: 中,
+     evidence: "光伏 4000 吨/GW、风电 5400 吨+/GW"}
+  - {from: 家电产销出口, to: 中国终端铜需求, polarity: "+", lag: 1月内, strength: 中,
+     condition: "3-6 月空调排产旺季"}
+  - {from: 数据中心算力基建需求, to: 海外终端铜需求, polarity: "+", lag: 6-24月, strength: 中,
+     evidence: "S&P:数据中心用铜 2025 年 110 万吨→2040 年 250 万吨"}
+  - {from: 数据中心算力基建需求, to: LME铜价格, polarity: "+", lag: 当日, strength: 弱,
+     rationale: "两段行情:hyperscaler capex 指引上调当天就计价(这条边,叙事/情绪),但真实用铜(IDC 建设+电网增容)要 6-24 个月兑现(上面那条边)。2025-26 的'AI 用铜'叙事属于典型的预期先行——若 capex 被证伪,这条边先反噬",
+     evidence: "2025-26 AI 叙事与铜价新高共振"}
+  - {from: 海外制造业PMI, to: 海外终端铜需求, polarity: "+", lag: 1-3月, strength: 中}
+  - {from: 中国宏观刺激力度, to: 中国终端铜需求, polarity: "+", lag: 1-6月, strength: 中,
+     condition: "落地强度决定兑现程度"}
+  - {from: 中国宏观刺激力度, to: SHFE铜价格, polarity: "+", lag: 当日, strength: 中,
+     rationale: "预期通道:政治局会议/降准当天就涨(沪强伦弱、比值上移),不等基建落地——与'落地→需求'那条 1-6 月的边分开建模,才能解释'会议行情'的回吐",
+     evidence: "2024.9.24 一揽子政策后一周反弹 5%+"}
+  - {from: 中国终端铜需求, to: 中国下游开工率, polarity: "+", lag: 即时, strength: 强}
+  - {from: 中国下游开工率, to: 中国社会库存, polarity: "-", lag: 数周, strength: 强,
+     condition: "恒等式:库存变化=到货-消费(开工去库)"}
+  - {from: 海外终端铜需求, to: 全球显性库存, polarity: "-", lag: 1-3月, strength: 强}
+
+  # ── 高价抑需(R2 负反馈环)──
+  - {from: SHFE铜价格, to: 中国下游开工率, polarity: "-", lag: 1月内, strength: 中,
+     condition: "快涨期下游按需采购/停单观望",
+     evidence: "2024.5 沪铜 88940 历史新高时现货成交冻结、社库积压,Q3 回落至 7.3 万"}
+
+  # ── 库存/市场结构 → 价格 ──
+  - {from: 全球显性库存, to: LME铜价格, polarity: "-", lag: 数周, strength: 强,
+     condition: "低库存时弹性放大"}
+  - {from: 中国社会库存, to: SHFE铜价格, polarity: "-", lag: 数周, strength: 强,
+     evidence: "SMM 周一/周四库存是国内日内最敏感数据"}
+  - {from: LME注销仓单占比, to: LME升水结构, polarity: "+", lag: 数周, strength: 中,
+     condition: "库存低位时"}
+  - {from: 全球显性库存, to: LME升水结构, polarity: "-", lag: 数周, strength: 中}
+  - {from: LME升水结构, to: LME铜价格, polarity: "+", lag: 即时, strength: 强,
+     condition: "挤仓态(back 失控)",
+     evidence: "2021.10 可用库存 1.4 万吨、back 破纪录 $1103.5,LME 被迫改规则"}
+  - {from: 基金净持仓, to: LME铜价格, polarity: "+", lag: 数日, strength: 中,
+     condition: "极值时反向挤压风险",
+     rationale: "资金是放大器不是驱动:常态跟随基本面;2024.5 COMEX 逼空的本质是基金大举做多+空头(套利/套保盘)被挤——持仓极值本身就是反转信号,所以配'中'并挂条件"}
+  - {from: COMEX库存水平, to: COMEX-LME价差, polarity: "-", lag: 即时, strength: 中,
+     condition: "库存极低+净多拥挤时易逼空", evidence: "2024.5 价差盘中超 $1000"}
+  - {from: 美国铜进口关税, to: COMEX-LME价差, polarity: "+", lag: 当日, strength: 强,
+     rationale: "精炼铜是否在征税范围是全部关键:2025.7.8 宣布 50% 当日 COMEX +13%、溢价纪录 $2520;7.30 公告精炼铜豁免,COMEX 单日暴跌 20%+、溢价归零——同一根因一个月内走完 +1 和 −1 两个方向,是'中性根因'建模必要性的最佳案例",
+     evidence: "2025 232 关税全程"}
+  - {from: COMEX-LME价差, to: 全球显性库存, polarity: "-", lag: 1-3月, strength: 强,
+     condition: "价差覆盖运费时贸易商向美搬库",
+     evidence: "2025 上半年全球铜赴美,COMEX 囤至 65 万吨纪录、LME/亚洲被抽紧"}
+
+  # ── 宏观 → 价格 ──
+  - {from: 美联储政策立场, to: 美元指数, polarity: "+", lag: 即时, strength: 强}
+  - {from: 美联储政策立场, to: 全球衰退预期, polarity: "+", lag: 数月, strength: 中,
+     condition: "激进紧缩期"}
+  - {from: 美元指数, to: LME铜价格, polarity: "-", lag: 当日, strength: 强,
+     rationale: "双通道:美元计价效应(美元贵→铜的美元标价承压)+新兴市场购买力效应。注意对沪铜的传导会被人民币汇率部分对冲:美元强→人民币贬→沪伦比值上移→沪铜跌幅小于伦铜",
+     evidence: "2022.3-9 DXY 98→114,LME -30%+"}
+  - {from: 全球衰退预期, to: LME铜价格, polarity: "-", lag: 当日, strength: 强,
+     evidence: "2022.7 恐慌周跌破 $7000,单周跌幅为疫情以来之最"}
+  - {from: 全球衰退预期, to: 海外终端铜需求, polarity: "-", lag: 3-12月, strength: 中,
+     condition: "衰退兑现才成立(预期通道走上面那条边)"}
+
+  # ── 内外联动(R3 负反馈环)──
+  - {from: LME铜价格, to: SHFE铜价格, polarity: "+", lag: 当日, strength: 强,
+     rationale: "枢纽边:LME 是全球定价锚,沪铜常态跟随(分钟级);但中国是 58% 的消费方,当'边际驱动在中国'(刺激政策/国内累库)时会走出沪强伦弱或沪弱伦强,由沪伦比值表达并通过进口流入的负反馈修正——所以这条边强,但不是简单的一比一映射",
+     evidence: "隔夜 LME+COMEX 基本决定沪铜开盘"}
+  - {from: SHFE铜价格, to: 沪伦比值, polarity: "+", lag: 即时, strength: 强}
+  - {from: LME铜价格, to: 沪伦比值, polarity: "-", lag: 即时, strength: 强}
+  - {from: 沪伦比值, to: 进口流入, polarity: "+", lag: 1-2月, strength: 强,
+     condition: "窗口持续打开;保税区有货时更快(2-6 周)",
+     evidence: "洋山铜溢价是窗口开合的同步现货信号"}
+  - {from: 进口流入, to: 中国社会库存, polarity: "+", lag: 数周, strength: 强,
+     condition: "R3 负反馈环:比值↑→进口盈利→流入↑→累库→压 SHFE→比值回落"}
+
+  # ── 国储 ──
+  - {from: 国储收抛储, to: 中国社会库存, polarity: "-", lag: 1月内, strength: 中,
+     evidence: "收储(+)移走现货;抛储(−)每批 2-3 万吨直供下游"}
+  - {from: 国储收抛储, to: SHFE铜价格, polarity: "+", lag: 当日, strength: 中,
+     rationale: "量级小(数万吨,不到月产量零头)但信号意义强:收储=政策认为价格过低(托底),抛储=政策认为过热(压顶);传闻阶段就计价",
+     evidence: "2021.6.16 宣布抛储当日沪铜 -2.66%"}

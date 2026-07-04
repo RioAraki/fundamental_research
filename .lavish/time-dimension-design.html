@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="luxury">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时间维度设计方案 v2 · 根因/事件分层</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+<style>
+  .cell { min-width: 0; word-break: break-word; }
+  table td, table th { overflow-wrap:anywhere; word-break:break-word; }
+  b, strong { display: contents; font-weight: 700; }
+  pre.demo { white-space: pre-wrap; word-break: break-all; font-size: .74rem; line-height: 1.6;
+             background: #14120e; border-radius: .5rem; padding: .8rem; }
+</style>
+</head>
+<body class="bg-base-200 text-base-content">
+<main class="mx-auto w-full max-w-5xl p-5 lg:p-10 cell space-y-6">
+
+  <div class="hero bg-base-100 rounded-box border border-base-content/10">
+    <div class="hero-content text-center py-8 px-4">
+      <div class="max-w-3xl">
+        <div class="badge badge-soft badge-warning mb-3">设计方案 v2 · 已按批注修正 · 2026-07-03</div>
+        <h1 class="text-3xl font-bold leading-normal px-1">时间维度 = 根因 / 事件 两层分开建模</h1>
+        <p class="mt-3 text-base-content/70">v1 的错误(你指出的):把"MPOB库存超预期"这类<b>事件</b>当成了根因去贴时间型标签,违反了根因中性原则。v2 修正:<b>根因是永续存在的中性变量;事件(新闻)是对根因的一次赋值;影响持续性由两层共同决定</b>。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 0 概念修正 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">0. 概念修正:根因 vs 事件,一条判据分清</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th></th><th><b>根因(变量)</b></th><th><b>事件(新闻)</b></th></tr></thead>
+      <tbody>
+        <tr><td>是什么</td><td>永续存在的<b>中性状态量</b>,任何时刻问"它现在的值是多少"都有意义(哪怕值 = 0/中性)</td><td>对某个根因的<b>一次带时间戳的赋值/观测</b>,有方向、有幅度</td></tr>
+        <tr><td>例</td><td>MPOB库存预期差(每月产生一个读数,平时 ≈0)、国储收抛储立场(平时 = 按兵不动)、产区干旱程度(一直有个当前值)</td><td>"2025.11 月报库存<b>超</b>预期"、"2021.6.16 宣布<b>抛储</b>"、"NOAA 宣布强厄尔尼诺<b>形成</b>"</td></tr>
+        <tr><td>放哪里</td><td><b>图里的节点</b>(机制骨架,永远在)</td><td><b>不进图</b>——进<b>事件日志</b>(推理的输入流)</td></tr>
+        <tr><td>有没有方向</td><td>没有(中性)</td><td>有(±)——方向是事件的属性,不是根因的</td></tr>
+        <tr><td>时间属性</td><td><b>回归特性</b>:被冲击后如何回到基线(见 §1)</td><td><b>事件窗口</b>:这次事件本身持续多久(见 §2)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="alert alert-success mt-2"><span><b>判据(一句话)</b>:把一句新闻里的<b>时间和方向剥掉</b>,剩下的名词就是根因;带着时间和方向的整句话是事件。"11 月库存<u>超</u>预期"→ 剥掉 → "库存预期差"(根因)。<br/><b>"没有新闻时没有影响"在这个模型里天然成立</b>:根因读数在基线(0)时,符号传播的输入就是零,整条传导链静默——图存机制(永远在),事件激活机制(偶尔来)。这正是现有推理器的行为:不给冲击就没有传播,只是我们之前没把"冲击"正式化为带时间戳的事件对象。</span></div>
+  </div></div>
+
+  <!-- 0.5 正式定义 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">0.5 三层的正式定义(本体地基)</h2>
+
+    <h3 class="font-bold mt-2">🧱 变量(根因)Variable</h3>
+    <p class="text-sm"><b>定义:一个可测量的、持续存在的中性状态量,描述影响目标价格的某个机制的当前状态。</b>图谱的节点,知识的原子单位。<br/>一句话:<b>变量是世界的一块仪表盘,图谱是仪表盘之间的接线图。</b></p>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <tbody>
+        <tr><td class="w-28"><b>判定标准<br/>(四条全过)</b></td><td>① <b>可测量</b>:任何时刻问"现在的值"都有意义(有数据序列,或至少可构造定性档位;值可以=0);② <b>中性</b>:名字里不许有方向词(上调/短缺/超预期→那是事件);③ <b>机制独立</b>:有自己的传导机制,不是其他变量的派生改写;④ <b>实质性</b>:传导占比值得建模</td></tr>
+        <tr><td><b>字段</b></td><td>id / type / direction(±语义) / note / signals / case / <b>回归特性</b>(五类) / theme(挂载的主题标签)</td></tr>
+        <tr><td><b>生命周期</b></td><td>年-十年。出生=新机制跨过实质性阈值(印尼生柴掺混率生于 2008 B2.5);死亡=机制消失(归档不删)。git 历史是它的年谱</td></tr>
+        <tr><td><b>反例</b></td><td>"库存超预期"含方向且瞬时→事件;"AI数据中心扩建"用主题给变量命名→不纯,应改"数据中心算力基建需求"</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="font-bold mt-4">⚡ 事件 Event</h3>
+    <p class="text-sm"><b>定义:对某个变量的一次带时间戳的赋值或观测</b>,来源是新闻/数据发布/公告。不进图,进事件日志,是推理器的输入流。<br/>一句话:<b>事件是某一刻有人读了一眼仪表盘、喊出了读数变化。</b></p>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <tbody>
+        <tr><td class="w-28"><b>判定标准</b></td><td>① <b>有时间戳</b>;② <b>有方向</b>(±,可带幅度);③ <b>可归属</b>:必须落到受控词表中某个已有变量上——<b>落不到=要么不相关,要么提示图谱缺变量(这是图谱代谢的发现机制:归属失败的事件是新根因的候选来源)</b></td></tr>
+        <tr><td><b>字段</b></td><td>time / root_cause / direction / magnitude / window / source</td></tr>
+        <tr><td><b>四个亚型</b></td><td><b>冲击型</b>(禁令/事故——改变现实本身)、<b>数据型</b>(月报/统计——揭示现实,价值在预期差)、<b>确认型</b>(趋势年报——增量≈0,早已计价)、<b>反转型</b>(解除/豁免——回收此前的状态型事件)</td></tr>
+        <tr><td><b>生命周期</b></td><td>小时-月。影响窗口=min(事件持续期, 变量回归期);过期后留在日志里变成历史案例(校准原料)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 class="font-bold mt-4">🔥 主题 Theme(叙事)</h3>
+    <p class="text-sm"><b>定义:一个或多个变量在某段时期的市场注意力状态</b>——市场当前"正在交易什么故事"。既不是变量也不是事件,是<b>挂在变量上的时变标签</b>。<br/>一句话:<b>主题是市场此刻正盯着哪几块仪表盘讲故事。</b></p>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <tbody>
+        <tr><td class="w-28"><b>判定标准</b></td><td>① <b>依附性</b>:必须能指出捆绑了哪些变量(主题不独立存在,是变量的叙事包装,可多对多);② <b>时段性</b>:有可辨认的活跃期(出生可考,死亡只能事后检测);③ <b>注意力可观测</b>:热度有代理量——事件密度/价格敏感度/卖方报告提及率</td></tr>
+        <tr><td><b>字段</b></td><td>name / status(活跃🔥/降温🌡️/休眠💤) / born / bound_variables / note(点燃逻辑+退场条件)</td></tr>
+        <tr><td><b>作用机制</b></td><td>主题<b>不改变机制</b>(边还是那些边),改变的是<b>计价强度乘数</b>:活跃主题的路径被立刻甚至过度计价;休眠主题的路径被忽视——机制照常运转,只是"没人交易基本面",直到某天突然收敛</td></tr>
+        <tr><td><b>生命周期</b></td><td>月-年。六种生灭:点燃(单一大事件/连续同向累积)、存续(借尸还魂/反复横跳)、死亡(证伪/计价/自然退烧)。管理=监测不预言</td></tr>
+        <tr><td><b>易混点</b></td><td>232 关税同时产生了<b>状态型事件</b>(税率真的变了,事实层,由供需定价)和<b>主题</b>(堰塞湖叙事,注意力层,由资金定价)——豁免时事实回滚(−1 事件)与主题退烧同时发生,但是两回事</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="alert alert-success mt-3"><span><b>三层协作 = 推理的完整输入:图(变量+边)给传导结构;事件给激活(方向×幅度×窗口);主题给计价强度乘数。</b><br/><b>判定流程</b>:拿到一句话 → 有时间戳+方向?→ 是事件,归属到变量(归属不了→按入图四条判据考虑新变量)→ 说的是"最近市场都在炒 X"?→ 是主题,标到对应变量上。</span></div>
+  </div></div>
+
+  <!-- 0.6 两个追问 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">0.6 两个追问:根因会增减吗?主题到底是什么?</h2>
+
+    <h3 class="font-bold mt-2">追问一:根因本身会变化吗?——会,图有代谢。真实例子:</h3>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>变化</th><th>例子</th><th>发生了什么</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3" class="text-success"><b>新增(出生)</b></td><td><b>印尼生柴掺混率</b></td><td>2008 年印尼推 B2.5 之前,世界上根本没有"掺混率"这个量——<b>变量随政策诞生</b>;到 B20(2016)后传导占比变大,才值得入图</td></tr>
+        <tr><td><b>数据中心算力基建需求</b>(铜)</td><td>2015 年它"存在"但太小(不足消费 1%),不满足实质性判据、不配入图;2023-25 AI capex 爆发,占新增需求显著份额 → <b>跨过实质性阈值 → 新增节点</b>。根因的"增加"多数是这样:不是世界里凭空出现,而是从"太小不建模"长大到"必须建模"</td></tr>
+        <tr><td><b>美国铜进口关税</b></td><td>税率=0 存在了几十年、从不驱动价格,不值得入图;2025.2 启动 232 调查后必须入图——<b>沉睡的变量被政策唤醒</b></td></tr>
+        <tr><td rowspan="2" class="text-error"><b>减少(死亡/归档)</b></td><td><b>欧盟棕榈油生柴需求</b></td><td>曾是棕油需求大项;RED II 后欧盟趋势性退出棕油生柴 → 传导占比萎缩 → 某天从图里<b>归档</b>(现在我们只留了一条弱边 EUDR,就是它萎缩后的残余)</td></tr>
+        <tr><td><b>"废六类"进口批文</b>(铜,历史真例)</td><td>2020 年再生铜原料新国标(GB/T 38471)后,旧的"废六类批文额度"这个变量<b>死亡</b>,被"再生铜原料标准/关税"取代——<b>变量更替</b></td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-sm text-base-content/70">增减都由入图判据(可测量/中性/机制独立/实质性)裁决;归档不物理删除。git diff 里"新增一个节点"这件事本身,就是一条重要的研究记录。</p>
+
+    <h3 class="font-bold mt-5">追问二:主题到底是什么?——用一个受控对照实验讲清</h3>
+    <div class="rounded bg-base-300 p-3 text-sm">
+      <b>同一条新闻,两个年份,唯一的差别是主题状态:</b><br/><br/>
+      🗓️ <b>2021 年 10 月</b>:统计局公布竣工面积同比 −20%。当时"地产链坍塌"主题<b>活跃</b> → 当天铜价应声大跌,全市场都在交易这个数。<br/>
+      🗓️ <b>2025 年某月</b>:统计局公布竣工面积同比 −20%。<b>同样的事件、同样的根因、同一条机制边</b>,但主题已<b>休眠</b> → 盘面几乎无反应,当天大家在交易 TC 和美联储。<br/><br/>
+      根因没变、事件没变、传导机制没变——<b>价格反应却差一个量级。造成这个差别的那个东西,就是主题。</b><br/>
+      价格 = 事实变化 × 市场注意力。根因层管前者,主题层管后者。没有主题层,模型会错误地预测 2025 年那次 −20% 也该跌 2021 年那么多。
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2 mt-3 text-sm">
+      <div class="rounded bg-base-200 p-3"><b>一个好记的类比:公司组织</b><br/>
+      · 根因 = <b>部门</b>(常设机构,每天都在产出,各管一摊机制)<br/>
+      · 事件 = 某部门今天交的<b>一份报告</b>(有日期有内容)<br/>
+      · 主题 = 本季度的<b>"战略重点"门牌</b>:挂上牌子的部门,报告直达 CEO(市场立刻计价);牌子摘了,部门照常运转、报告照常产出,<b>只是没人看了</b>。<br/>
+      "挂在根因上的标签"就是这块门牌——它不是新部门(不是图里的新节点),它是贴在已有部门门口的、会换的注意力标记。</div>
+      <div class="rounded bg-base-200 p-3"><b>为什么主题不能当成根因建节点</b><br/>
+      拿"2026 供给缺口"(铜)来说:它不对应任何单一变量,而是市场把<b>矿端扰动 + TC 归零 + 品位下降</b>三个变量的读数<b>编织成的一个故事</b>。你没法在图里指着某个节点说"这就是供给缺口"——故事的作用是让这三个节点上的任何新事件都被放大计价。主题:变量 = 多对多,它是叙事包装,不是机制原子。</div>
+    </div>
+
+    <div class="overflow-x-auto mt-3"><table class="table table-sm">
+      <thead><tr><th>操作性判别</th><th>根因</th><th>主题</th></tr></thead>
+      <tbody>
+        <tr><td><b>它变了,现实中的吨数/美元会变吗?</b></td><td>会——供需真实变化(竣工少了,铜真的少用了)</td><td><b>不会</b>——只是市场看不看它的问题(注意力变化)</td></tr>
+        <tr><td>在图里吗?</td><td>是节点</td><td>不是节点,是写在节点 YAML 里的一个小字段(见下)</td></tr>
+        <tr><td>怎么测量?</td><td>数据序列(竣工面积/税率/库存)</td><td>新闻密度、价格敏感度、研报提及率</td></tr>
+        <tr><td>谁给它定价?</td><td>供需——慢而必然(机制迟早收敛)</td><td>资金——快而善变(可以提前、过度、也可以完全无视)</td></tr>
+        <tr><td>例</td><td>地产竣工面积(变量)</td><td>"地产链坍塌"(2021-22 的叙事)</td></tr>
+      </tbody>
+    </table></div>
+
+    <p class="text-sm mt-2"><b>"标签"在工程上就长这样</b>——节点 YAML 里的一个字段,不新建任何节点:</p>
+    <div class="mockup-code text-xs"><pre><code>- id: 地产竣工景气            # ← 根因(节点),永远在图里
+  type: 根因·需求
+  theme:                      # ← 主题(标签),挂在节点上、随时间改写
+    name: 地产链坍塌
+    status: 休眠               # 2021-22 曾为"活跃"
+    note: "复活条件 = 超预期政策反转"</code></pre></div>
+  </div></div>
+
+  <!-- 1 根因回归特性 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">1. 根因层:五类「回归特性」(v1 五类的正名——贴给变量,不贴给事件)</h2>
+    <p class="text-sm text-base-content/70">回归特性回答:<b>这个变量被一次事件推离基线后,以什么方式回去(或不回去)?</b>这是变量的内在性质,与具体哪条新闻无关。</p>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>回归特性</th><th>行为</th><th>信息寿命</th><th>根因示例</th></tr></thead>
+      <tbody>
+        <tr><td><b>⚡ 快速重置型</b></td><td>按数据发布周期<b>天然归零</b>:下一期是全新的预期差,上一期作废</td><td>= 发布间隔(月报 1 个月),但<b>价格计价窗口更短(数日)</b></td><td>MPOB库存预期差、(铜)交易所库存周度变化</td></tr>
+        <tr><td><b>🌊 事件回收型</b></td><td>随现实事件结束而回收,结束本身常是一条反向新闻</td><td>= 事件持续期(洪水退去、罢工谈妥、备货季结束)</td><td>产区降雨水平、矿端供给扰动率、马来劳工供给、印度节日备货强度</td></tr>
+        <tr><td><b>🔒 状态保持型</b></td><td><b>保持到反转事件</b>出现,期间持续有效;但市场逐渐计价(边际递减)</td><td>不定,以年计也可能(232 关税、B40)</td><td>印尼出口限制力度、印度进口关税、美联储政策立场、国储收抛储立场</td></tr>
+        <tr><td><b>📈 趋势累积型</b></td><td>不回归,单向渐变;单条新闻只是对趋势的确认,增量影响小</td><td>≈永久(决定价格中枢而非日内)</td><td>树龄老化程度、矿山资本开支与品位、健康/全球食用消费趋势</td></tr>
+        <tr><td><b>🔄 季节周期型</b></td><td>日历周期函数,可预测,计价提前</td><td>周期性</td><td>季节性产量周期</td></tr>
+      </tbody>
+    </table></div>
+  </div></div>
+
+  <!-- 1.5 边界情形 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">1.5 边界情形:地产竣工、AI数据中心算根因还是新闻?——引出第三层「主题」</h2>
+    <p class="text-sm text-base-content/70">完整的时间尺度其实是<b>三层</b>,主题夹在事件和变量之间:</p>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>层</th><th>时间尺度</th><th>是什么</th><th>生命周期怎么管</th></tr></thead>
+      <tbody>
+        <tr><td><b>事件</b></td><td>小时-周</td><td>对变量的一次赋值</td><td>事件窗口,自然过期</td></tr>
+        <tr class="bg-warning/10"><td><b>主题(叙事)</b></td><td>月-年</td><td><b>某个变量在某段时期的市场地位</b>——不是变量本身,是挂在变量上的"当前热度状态"</td><td>无法预言死期,但可<b>监测退场信号</b>(见下)</td></tr>
+        <tr><td><b>变量(根因)</b></td><td>年-十年</td><td>机制本身</td><td>也有生老病死,只是慢;入图/退图 = 图的代谢</td></tr>
+      </tbody>
+    </table></div>
+    <div class="grid gap-3 sm:grid-cols-2 mt-3 text-sm">
+      <div class="rounded bg-base-200 p-3"><b>地产竣工 = 干净的根因 ✓</b><br/>变量(竣工面积)有几十年统计序列,任何时刻都有读数——变量永续。只是它的<b>主题状态</b>从"2021-22 交易主线"降到"休眠"。<b>变量在,热度走了</b>,两层各自记账,不冲突。</div>
+      <div class="rounded bg-base-200 p-3"><b>AI数据中心扩建 = 用主题给根因命名(命名不纯)⚠️</b><br/>剥掉叙事,底层变量是<b>「数据中心/算力基建需求」</b>——2015 年也存在(小到没人看),AI 退潮后也会存在(可能沉淀成像家电一样的基荷需求)。<b>建议:节点改名为变量纯名,"AI"降级为挂在节点上的主题标签</b>:<code class="text-xs">theme: {name: AI算力扩建, born: 2023, status: 活跃}</code>。主题死了,变量和边还在;下一个主题(比如某天的量子算力)可以挂到同一个变量上。</div>
+    </div>
+    <div class="alert alert-success mt-3"><span><b>"很难说主题什么时候消退"——对,所以不预言,只监测。三个可操作的退场信号(任一触发即降档):</b><br/>
+    ① <b>关注度死亡</b>:事件密度→0(该根因连续 N 个月无新闻命中);<br/>
+    ② <b>计价死亡</b>:事件仍在发生但价格不再响应(event study 敏感度→0,即"利多出尽");<br/>
+    ③ <b>实体死亡</b>:变量的 materiality 跌破阈值(占需求增量的比重不再显著)。<br/>
+    降档动作 = theme 状态改休眠 + 推理打折,<b>节点和边归档不删除</b>——地产若政策反转、热度可复活,知识不应因退烧而丢失。</span></div>
+    <p class="text-sm mt-2"><b>变量自己也有生命周期(最慢的一层)</b>:「印尼生柴掺混率」这个变量在 B 计划出现之前根本不存在,哪天政策废除它也会死。所以图本身是活文档,节点/边的增删是图的代谢,git 历史就是图的成长史。<b>入图判据(什么配当根因)</b>:① 可测量(有数据序列或可构造读数);② 对目标价格有实质传导占比;③ 有独立驱动源(不是其他节点的派生)。退图 = 归档到休眠层,不物理删除。</p>
+  </div></div>
+
+  <!-- 1.6 例子长廊 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">1.6 例子长廊:把两个品种的真实案例全部代入三层</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>现实中的一句话</th><th>⚡ 事件层(带时间+方向)</th><th>🔥 主题层(市场地位,月-年)</th><th>🧱 变量层(永续根因)</th></tr></thead>
+      <tbody>
+        <tr><td>"佐科宣布 4.28 起禁止棕榈油出口"(2022.4)</td><td>+1 冲击,状态保持型激活;25 天后"解除禁令"是另一条 −1 事件</td><td>"印尼食用油危机/资源民族主义"——2022 上半年活跃,flush out 后退烧</td><td><b>印尼出口限制力度</b>:任何时候都有"当前限制水平"(levy 档位/DMO 配额/是否禁令)</td></tr>
+        <tr><td>"NOAA 宣布厄尔尼诺形成"(2023.6)</td><td>+1 确认事件</td><td>"天气市/El Niño 减产"——2023.6 点燃,Q4 被高库存<b>证伪而死</b>(计价死亡的标准案例)</td><td><b>产区干旱程度</b>:ONI 指数任何时候都有读数</td></tr>
+        <tr><td>"MPOB 11 月报库存超预期"</td><td>+1 脉冲,数日窗口,下次月报作废</td><td>单次不构成主题;但<b>连续六个月同向 → 累积成"马来累库周期"主题</b>(2025 下半年"六连增"叙事)——连续同向事件会孕育主题</td><td><b>MPOB库存预期差</b>(月度重置)/ MPOB库存水平(慢)</td></tr>
+        <tr><td>"印尼宣布 B40 于 2025.1.1 实施"</td><td>+1 政策落地事件;"B50 推迟"是后来的 −1 事件</td><td>"生柴需求革命"——2024 下半年至今活跃,靠掺混率×执行率×补贴三因子反复摆动</td><td><b>印尼生柴掺混率</b>:注意这个变量 2008 年 B2.5 之前<b>根本不存在</b>——变量生命周期的活例</td></tr>
+        <tr><td>"俄乌开战,黑海葵油断供"(2022.2)</td><td>−1 冲击(供应中断)</td><td>"油脂供应安全/替代重构"——2022 活跃,黑海走廊协议后退烧</td><td><b>黑海葵油供应</b>:任何时候都有出口量读数</td></tr>
+        <tr><td>"MPOB 年报:翻种率仍只有 2%"</td><td>确认型事件,<b>增量影响 ≈0</b>(早已计价)</td><td>"供给见顶/结构性牛市"——趋势变量的主题会<b>借尸还魂</b>:每逢减产季被重新点燃一次,炒完又睡</td><td><b>树龄老化程度</b>:趋势累积型,不回归</td></tr>
+        <tr class="bg-base-200/50"><td>"特朗普宣布 50% 铜关税"(2025.7.8)→"精炼铜豁免"(7.30)</td><td><b>22 天内两条方向相反的事件</b>(+1 → −1)</td><td>"232 关税/美国库存堰塞湖"——2025.2 调查启动时诞生,7.30 豁免后快速退烧,但留 2027 分阶段征税的尾巴(主题假死,可复活)</td><td><b>美国铜进口关税</b>:任何时候都有"当前税率与范围"</td></tr>
+        <tr class="bg-base-200/50"><td>"Grasberg 宣布不可抗力"(2025.9)</td><td>+1 事故事件</td><td>"2026 供给缺口"——注意这个主题由<b>多个事件共同喂养</b>(Grasberg+Kamoa 矿震+El Teniente 事故+TC 归零),单一事件退场主题也不死</td><td><b>矿端供给扰动率</b>:任何时候都有"当前受扰产能占全球比"</td></tr>
+        <tr class="bg-base-200/50"><td>"CSPT 宣布 2026 减产 10%"(2025.11)</td><td>+1 公告事件</td><td>"冶炼减产/负 TC 危机"——2024 至今<b>反复横跳</b>:公告点燃→产量数据不兑现证伪→TC 再创新低又点燃。主题可以死而复生多次</td><td><b>中国冶炼产能扩张</b> + TC/RC加工费(中间变量)</td></tr>
+        <tr class="bg-base-200/50"><td>"FOMC 降息 25bp"</td><td>方向视决议与预期差的事件</td><td>"降息周期/软着陆交易"——跨资产宏观主题,数月-一年</td><td><b>美联储政策立场</b>:任何时候都有当前利率+指引</td></tr>
+        <tr class="bg-base-200/50"><td>"国网发布年度投资计划 6500 亿"(每年 1 月)</td><td>+1 计划公告(还是<b>季节型事件</b>:每年固定时点必来)</td><td>"电网超级周期/十五五 4 万亿"——2024 至今活跃</td><td><b>中国电网投资</b>:月度完成额永续读数</td></tr>
+        <tr class="bg-base-200/50"><td>"国储宣布抛储铜铝锌"(2021.6)</td><td>−1 事件,当日沪铜 -2.66%</td><td>"保供稳价"——2021 年政策主题,数月后退场</td><td><b>国储收抛储立场</b>:平时读数=按兵不动(0)</td></tr>
+        <tr><td>"统计局:竣工面积同比 -15%"</td><td>−1 月度数据事件</td><td>"地产链坍塌"——2021-22 交易主线,<b>现休眠</b>(关注度死亡:同类数据继续发布但无人交易它)</td><td><b>地产竣工景气</b>:几十年统计序列,变量健在</td></tr>
+        <tr><td>"微软上调数据中心 capex 指引"</td><td>+1 季度财报事件</td><td>"AI 算力扩建"——2023 诞生、当前最活跃;若 capex 被证伪将退烧</td><td><b>数据中心算力基建需求</b>(改名后):2015 年也存在,AI 退潮后也存在,可能沉淀为基荷需求</td></tr>
+      </tbody>
+    </table></div>
+    <div class="alert mt-3"><span><b>同一个词能在三层都出现——这是最容易混淆也最能帮你"感受"的地方:</b><br/>
+    "<b>累库</b>":本周社库 +3 万吨(事件)/ "累库周期"(主题)/ 库存水平(变量);<br/>
+    "<b>减产</b>":某冶炼厂检修公告(事件)/ "冶炼减产潮"(主题)/ 精铜产量(变量);<br/>
+    "<b>干旱</b>":NOAA 本月 ONI 读数(事件)/ "天气市"(主题)/ 产区干旱程度(变量)。<br/>
+    说话时不区分没关系,<b>进图谱时必须落到变量,进日志时必须落到事件,主题只是挂在变量上的热度标签</b>。</span></div>
+    <div class="grid gap-3 sm:grid-cols-2 mt-3 text-sm">
+      <div class="rounded bg-base-200 p-3"><b>层间数量关系</b>:事件:变量 = 多对一(无数条新闻打同一个变量);主题:变量 = 可以多对多——"232 关税"主题捆绑了关税+COMEX库存+跨市价差三个变量,"供给缺口"主题由四五个矿端事件共同喂养。<b>主题是叙事包装,变量是机制原子</b>。</div>
+      <div class="rounded bg-base-200 p-3"><b>主题的六种生灭模式(全部有真实案例)</b>:单一大事件点燃(232)/ 连续同向事件累积(累库六连增)/ 趋势借尸还魂(树龄)/ 证伪死亡(2023 El Niño)/ 兑现·计价死亡(利多出尽)/ 自然退烧(事件密度衰减,地产)。</div>
+    </div>
+  </div></div>
+
+  <!-- 2 事件层 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">2. 事件层:事件日志(新增的一等公民)</h2>
+    <p class="text-sm text-base-content/70">事件不进图,进<b>事件日志</b>——一个随时间追加的记录流,是推理器的正式输入(也是未来 LLM 解析新闻的输出格式,对应 FinDKG 的带时间戳四元组思想):</p>
+    <div class="mockup-code text-xs"><pre><code># events.yaml(事件日志,append-only;未来由 LLM 从新闻自动生成、人工审核)
+- time: "2025-11-10"
+  root_cause: MPOB库存预期差        # 必须命中已有根因(受控词表,防幻觉)
+  direction: +1                     # 超预期(利空方向的赋值)
+  magnitude: 强                     # 超预期幅度(可选:偏离调查中值几个标准差)
+  window: 数日                      # 事件窗口;缺省按根因回归特性查表(快速重置型→数日)
+  source: "MPOB 11月报 vs 路透调查"
+
+- time: "2022-04-22"
+  root_cause: 印尼出口限制力度
+  direction: +1                     # 禁令(收紧)
+  window: 待反转                    # 状态保持型:持续到反转事件(5.23 出现 direction:-1 的新事件)
+  source: "佐科宣布 4.28 起禁止出口"</code></pre></div>
+    <p class="text-sm mt-2">好处:① 推理输入从"手写 shocks 字典"升级为"查询事件日志:当前有哪些活跃事件?"——<b>叠加多个活跃事件做当下的综合研判</b>成为可能;② 事件日志本身就是历史案例库(回验校准的原料);③ "主题热度"的动态版 = 该根因近期事件密度,自然涌现。</p>
+  </div></div>
+
+  <!-- 3 影响持续性合成 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">3. 影响持续性 = 两层合成(回答"怎么区分根因和新闻的影响持续性")</h2>
+    <pre class="demo">某事件经某条路径的影响窗口:
+
+  开始 = 事件时间 + 路径累计 lag        (lag 是边的属性,已有)
+  结束 = 开始 + min(事件窗口, 根因回归期)  (两层各出一个,取短板)
+
+三个例子:
+① "11月库存超预期"(快速重置型根因 × 脉冲事件)
+   → 影响窗口 ≈ 数日。且下月月报发布时,这个读数彻底作废——
+     即使价格没反应完,信息寿命也到了。
+② "印尼宣布禁令"(状态保持型根因 × 待反转事件)
+   → 影响持续到反转事件(5.23 解除 = 新事件 direction:-1),
+     期间边际影响递减(逐渐计价);同时反身回路在图上预告了反转的到来。
+③ "年度报告确认马来树龄继续老化"(趋势累积型根因 × 确认型事件)
+   → 单次事件增量影响 ≈ 0(早已计价),趋势本身持续作用于远期中枢——
+     这解释了为什么慢变量"永久影响"但从不驱动日内行情。</pre>
+    <p class="text-sm">推理输出照 v1 方案升级为<b>分时间段结论</b>(0-1月/1-6月/6月+),但每条路径的窗口现在有了严格的来源:边给 lag,事件给窗口,根因给回归期。</p>
+  </div></div>
+
+  <!-- 分时段 mockup -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">4. 输出效果(与 v1 相同,机制更干净)</h2>
+    <pre class="demo">◆ 事件:2023-06-08 NOAA 宣布强厄尔尼诺形成
+  → 根因「产区干旱程度」(事件回收型,ENSO 周期 9-24 月)赋值 +1
+
+▶ DCE棕榈油价格 —— 分时间段结论:
+   【0-1 月】偏多(情绪路径;天气升水情绪为快速重置型,数周衰减)
+              └ ⚠️ 条件:高库存下易证伪(2023 剧本)
+   【1-6 月】中性(情绪回吐、单产未兑现 —— 2023 Q4 回撤真空段)
+   【6-24 月】偏多(单产路径兑现;窗口终点 = ENSO 事件回收)
+              └ 验证信号:MPOB 月度单产(每月10日)</pre>
+  </div></div>
+
+  <!-- 热度/保鲜(不变) -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">5. 主题热度与机制保鲜(v1 方案不变,且更顺了)</h2>
+    <ul class="text-sm space-y-2 list-disc pl-5">
+      <li><b>热度 = 根因近期事件密度</b>:有了事件日志,热度不再需要单独的采集通道——某根因 90 天内事件条数/加权频率就是热度指数。地产竣工休眠 = 长期无事件;AI 数据中心活跃 = 事件密集。静态标注(theme.status)作为冷启动,事件日志积累后自动接管。</li>
+      <li><b>休眠主题:打折 + 标注,不剪掉</b>(机制知识不因没热度而丢失)。</li>
+      <li><b>边保质期</b>:review 字段 + CI 超期提醒,不变。</li>
+    </ul>
+  </div></div>
+
+  <!-- 实施 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">6. 实施批次(v2 修订)</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>批次</th><th>内容</th><th>工作量</th></tr></thead>
+      <tbody>
+        <tr class="bg-success/10"><td><b>B1</b></td><td>两份 YAML 全部根因标注<b>回归特性</b>(reversion)+ theme 冷启动状态;面板/交互页显示徽章</td><td>半天</td></tr>
+        <tr class="bg-success/10"><td><b>B2</b></td><td><b>事件日志 schema(events.yaml)</b>+ 推理器改造:输入=事件(时间/方向/窗口),输出=分时间段结论;演示改为"读事件日志推当下"</td><td>1 天</td></tr>
+        <tr><td>B3</td><td>边 review 字段 + CI 超期提醒</td><td>1 小时</td></tr>
+        <tr><td>B4(接新闻后)</td><td>LLM 新闻→事件日志(受控词表);事件密度→动态热度;event study 计价程度</td><td>属于数据接入阶段</td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-sm text-base-content/70 mt-2">残留决策点:事件窗口和回归期的默认值表(快速重置型=数日/事件回收型=事件期/状态保持型=待反转/趋势型=∞)是否认可;分时间段的桶(0-1月/1-6月/6月+)是否合适。</p>
+  </div></div>
+
+</main>
+</body>
+</html>

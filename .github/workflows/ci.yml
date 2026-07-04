@@ -1,0 +1,19 @@
+name: kg-ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - "kg-mvp/**"
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install networkx pyyaml
+      - name: 质量门(schema + golden tests + 事件校验)
+        run: python ci_checks.py
+        working-directory: kg-mvp

@@ -1,0 +1,11 @@
+flowchart LR
+  E["事件<br/>韩国 PX 装置检修"] -->|"− 减少"| S["PX 供应<br/>(产量+进口)"]
+  S -->|"− 反向"| PXP["PX 价格 / PXN 价差"]
+  PXP -->|"+ 抬升"| COST["PTA 现金成本<br/>(0.66×PX)"]
+  COST -->|"− 压缩"| FEE["PTA 加工费"]
+  FEE -->|"+ 同向, lag 数周"| OP["PTA 开工率"]
+  OP -->|"+ 同向"| TASUP["PTA 供应"]
+  TASUP -->|"− 反向"| TAP["PTA 价格"]
+  COST -->|"+ 成本推升"| TAP
+  style E fill:#7c2d12,color:#fff
+  style TAP fill:#14532d,color:#fff

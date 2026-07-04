@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="luxury">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>化工板块 · 产业链地图</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#16130d',
+      primaryColor: '#1f1b12',
+      primaryTextColor: '#e9d8a6',
+      primaryBorderColor: '#6b5d33',
+      lineColor: '#8a7a45',
+      fontSize: '15px'
+    }
+  });
+</script>
+<style>
+  .scrollx { overflow-x: auto; }
+  .cell { min-width: 0; word-break: break-word; }
+  .mermaid { display: flex; justify-content: center; }
+</style>
+</head>
+<body class="bg-base-200 text-base-content">
+<main class="mx-auto max-w-6xl p-5 lg:p-10 space-y-10">
+
+  <!-- HERO -->
+  <section class="hero bg-base-100 rounded-box border border-base-content/10">
+    <div class="hero-content text-center py-9 px-4">
+      <div class="max-w-3xl">
+        <div class="badge badge-soft badge-warning mb-3">化工板块 · 入门主轴</div>
+        <h1 class="text-3xl lg:text-4xl font-bold leading-tight">你的 9 个化工代码 = <span class="text-primary">三条产业链主线</span></h1>
+        <p class="mt-4 text-base-content/70">已逐个核实：这 9 个品种<b class="text-primary">每一个都是「期货 + 期权」齐全</b>。它们不是孤立的，而是串成聚酯、烯烃、苯三条链——化工研究要"成链"地看。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY TAKEAWAYS -->
+  <section class="grid gap-4 md:grid-cols-3">
+    <div class="card card-border bg-base-100"><div class="card-body cell p-5">
+      <div class="text-3xl">🔗</div><h3 class="card-title text-base">三条主线</h3>
+      <p class="text-sm text-base-content/70">聚酯链 PX·PTA·EG／烯烃链 MA·PE·PP·PVC／苯链 BZ·EB。同源于原油、煤、丙烷。</p>
+    </div></div>
+    <div class="card card-border bg-base-100"><div class="card-body cell p-5">
+      <div class="text-3xl">✅</div><h3 class="card-title text-base">期权全有</h3>
+      <p class="text-sm text-base-content/70">9 个品种期货 + 期权都已上市。纯苯 BZ 最新（2025-07-08 同步上市）。</p>
+    </div></div>
+    <div class="card card-border bg-base-100"><div class="card-body cell p-5">
+      <div class="text-3xl">💰</div><h3 class="card-title text-base">灵魂是"价差"</h3>
+      <p class="text-sm text-base-content/70">化工很少孤立看单价，而是看产业链每一环的<b>加工利润</b>——利润是供给的调节阀。</p>
+    </div></div>
+  </section>
+
+  <!-- VARIETY TABLE -->
+  <section>
+    <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="text-primary">①</span> 9 个代码解析</h2>
+    <div class="scrollx rounded-box border border-base-content/10 bg-base-100">
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th>代码</th><th>全称</th><th>交易所代码</th><th>交易所</th><th>期权</th><th>产业链位置</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>bz</td><td>纯苯</td><td><span class="badge badge-soft badge-primary">BZ</span></td><td>大商所</td><td>✅</td><td>苯链·原料</td></tr>
+          <tr><td>eb</td><td>苯乙烯</td><td><span class="badge badge-soft badge-primary">EB</span></td><td>大商所</td><td>✅</td><td>苯链·中间体</td></tr>
+          <tr><td>eg</td><td>乙二醇 MEG</td><td><span class="badge badge-soft badge-primary">EG</span></td><td>大商所</td><td>✅</td><td>聚酯链·原料</td></tr>
+          <tr><td>ma</td><td>甲醇</td><td><span class="badge badge-soft badge-primary">MA</span></td><td>郑商所</td><td>✅</td><td>烯烃链·枢纽中间体</td></tr>
+          <tr><td>pe</td><td>聚乙烯 LLDPE</td><td><span class="badge badge-soft badge-warning">L</span></td><td>大商所</td><td>✅</td><td>烯烃链·终端</td></tr>
+          <tr><td>pp</td><td>聚丙烯</td><td><span class="badge badge-soft badge-primary">PP</span></td><td>大商所</td><td>✅</td><td>烯烃链·终端</td></tr>
+          <tr><td>pta</td><td>PTA 精对苯二甲酸</td><td><span class="badge badge-soft badge-warning">TA</span></td><td>郑商所</td><td>✅</td><td>聚酯链·原料</td></tr>
+          <tr><td>pvc</td><td>聚氯乙烯</td><td><span class="badge badge-soft badge-warning">V</span></td><td>大商所</td><td>✅</td><td>氯碱·终端</td></tr>
+          <tr><td>px</td><td>对二甲苯</td><td><span class="badge badge-soft badge-primary">PX</span></td><td>郑商所</td><td>✅</td><td>聚酯链·上游</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-base-content/55 mt-2">⚠️ 注意三个"代码 ≠ 直觉"：聚乙烯的交易所代码是 <b>L</b>(标的 LLDPE)、PTA 是 <b>TA</b>、PVC 是 <b>V</b>。金色徽章 = 代码和你写的不一样，下单时要用交易所代码。</p>
+  </section>
+
+  <!-- CHAIN DIAGRAM -->
+  <section>
+    <h2 class="text-2xl font-bold mb-1 flex items-center gap-2"><span class="text-primary">②</span> 产业链地图</h2>
+    <p class="text-base-content/60 mb-4 text-sm">从原料(原油/煤/丙烷)逐级加工到聚合物。<span class="text-primary font-semibold">金色 = 你清单里的 9 个品种</span>（期货+期权齐全）；灰色 = 关键节点但无独立期货。</p>
+    <div class="card card-border bg-base-100"><div class="card-body">
+      <div class="scrollx">
+        <pre class="mermaid">
+flowchart TD
+  CRUDE([原油 / 石脑油]):::raw
+  COAL([煤炭]):::raw
+  LPG([丙烷 / LPG]):::raw
+  CARB([电石]):::raw
+
+  CRUDE --> PX["PX 对二甲苯"]:::listed
+  CRUDE --> ETH(["乙烯"]):::mid
+  CRUDE --> PRO(["丙烯"]):::mid
+  CRUDE --> BZ["BZ 纯苯"]:::listed
+  COAL --> MA["MA 甲醇"]:::listed
+  COAL --> CARB
+  MA -->|MTO/MTP| ETH
+  MA -->|MTO/MTP| PRO
+  LPG -->|PDH| PRO
+
+  %% 聚酯链
+  PX -->|氧化| PTA["TA · PTA"]:::listed
+  ETH -->|氧化| EG["EG 乙二醇"]:::listed
+  PTA --> PET[["聚酯 PET"]]:::down
+  EG --> PET
+  PET --> PF["短纤 PF*"]:::near
+  PET --> PR["瓶片 PR*"]:::near
+
+  %% 烯烃链
+  ETH --> PE["L · 聚乙烯"]:::listed
+  PRO --> PP["PP 聚丙烯"]:::listed
+  ETH --> PVC["V · PVC"]:::listed
+  CARB --> PVC
+
+  %% 苯链
+  BZ -->|烷基化| EB["EB 苯乙烯"]:::listed
+  EB --> PS[["PS / EPS / ABS"]]:::down
+
+  classDef listed fill:#caa12f,stroke:#f0dca0,color:#1a1505,font-weight:bold;
+  classDef mid fill:#3a3528,stroke:#7a6c3f,color:#e9d8a6;
+  classDef raw fill:#241f15,stroke:#5e5430,color:#c9bd8f;
+  classDef near fill:#2c2f3a,stroke:#6b7390,color:#cdd6f0;
+  classDef down fill:#1f2a1f,stroke:#4f6b4f,color:#c8e0c8;
+        </pre>
+      </div>
+      <div class="flex flex-wrap gap-3 mt-2 text-xs">
+        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded" style="background:#caa12f"></span>你的 9 品种(期货+期权)</span>
+        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded" style="background:#3a3528;border:1px solid #7a6c3f"></span>关键中间体(无期货)</span>
+        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded" style="background:#2c2f3a;border:1px solid #6b7390"></span>关联品种(有期货,不在清单)</span>
+        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded" style="background:#1f2a1f;border:1px solid #4f6b4f"></span>下游终端</span>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- COMPLETENESS -->
+  <section>
+    <h2 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="text-primary">③</span> 覆盖全吗？缺什么</h2>
+    <div class="grid gap-4 lg:grid-cols-2">
+      <div class="card card-border bg-base-100 border-success/40"><div class="card-body cell p-5">
+        <h3 class="card-title text-base text-success">✓ 覆盖到的</h3>
+        <p class="text-sm text-base-content/70">三条聚合物主线的<b>核心原料 + 终端聚合物</b>，是能源化工里"合成材料"的主干。作为入门主轴非常聚焦、选得很好。</p>
+      </div></div>
+      <div class="card card-border bg-base-100 border-warning/40"><div class="card-body cell p-5">
+        <h3 class="card-title text-base text-warning">⚠ 建议后续补</h3>
+        <ul class="text-sm text-base-content/70 space-y-1 mt-1">
+          <li>• <b>原油 SC / LPG / 沥青</b> — 成本端总指挥(最该先补)</li>
+          <li>• <b>短纤 PF · 瓶片 PR</b> — 补全聚酯链终端，算全链利润</li>
+          <li>• <b>烧碱 SH</b> — 和 PVC 联产，氯碱平衡关键</li>
+          <li>• <b>尿素 UR</b> — 甲醇的煤化工兄弟</li>
+          <li>• <span class="opacity-60">纯碱/玻璃、橡胶系 — 自成体系，可暂缓</span></li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- FRAMEWORK -->
+  <section>
+    <h2 class="text-2xl font-bold mb-2 flex items-center gap-2"><span class="text-primary">④</span> 按框架的初步分析</h2>
+    <p class="text-base-content/60 mb-4 text-sm">把化工套进 L2→L6 框架，核心洞察：<b class="text-primary">化工的灵魂是"加工利润/价差"，不是单价</b>。</p>
+    <div class="space-y-3">
+      <div class="card card-border bg-base-100"><div class="card-body cell p-4">
+        <div class="flex items-center gap-2 mb-1"><span class="badge badge-primary">L2 供需</span><span class="font-semibold text-sm">典型"产能周期"品种</span></div>
+        <p class="text-sm text-base-content/70">供给看①新装置投产节奏(最重要)②开工率③进口；需求看下游开工→终端(地产/纺服/家电/出口)→季节性；库存看工厂/社会/港口。</p>
+      </div></div>
+      <div class="card card-border bg-base-100"><div class="card-body cell p-4">
+        <div class="flex items-center gap-2 mb-1"><span class="badge badge-secondary">L3 价格语言</span><span class="font-semibold text-sm">看"加工利润"而非单价 ⭐</span></div>
+        <div class="grid gap-2 sm:grid-cols-2 mt-1 text-xs">
+          <div class="rounded bg-base-200 p-2">甲醇制烯烃利润 ≈ PP/PE − 3×MA</div>
+          <div class="rounded bg-base-200 p-2">PTA 加工费 ≈ PTA − 0.66×PX</div>
+          <div class="rounded bg-base-200 p-2">苯乙烯利润 ≈ EB − 纯苯 − 乙烯</div>
+          <div class="rounded bg-base-200 p-2">聚酯利润 ≈ 聚酯 − 0.86×PTA − 0.34×EG</div>
+        </div>
+        <p class="text-xs text-base-content/60 mt-2">谁利润高→谁多开工→供给增→利润回归。<b>利润 = 供给的调节阀。</b></p>
+      </div></div>
+      <div class="card card-border bg-base-100"><div class="card-body cell p-4">
+        <div class="flex items-center gap-2 mb-1"><span class="badge badge-accent">L4 驱动</span><span class="font-semibold text-sm">原油是成本锚</span></div>
+        <p class="text-sm text-base-content/70">原油(成本总指挥)、装置投产/检修/意外停车、成本路径切换(油头vs煤头vs气头)、终端需求(地产/出口/家电)、季节性(农膜/检修季)。</p>
+      </div></div>
+      <div class="card card-border bg-base-100"><div class="card-body cell p-4">
+        <div class="flex items-center gap-2 mb-1"><span class="badge badge-success">L6 决策</span><span class="font-semibold text-sm">经典玩法是"价差/利润套利"</span></div>
+        <p class="text-sm text-base-content/70">单边赌供需门槛高；化工更多做产业链套利(做多/空某加工利润、跨期、内外盘)。有了期权还能表达"利润区间/波动率"观点。</p>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- NEXT -->
+  <section>
+    <div class="card bg-base-100 border border-warning/40"><div class="card-body cell">
+      <h2 class="text-xl font-bold">🚀 建议切入顺序 + 下一步</h2>
+      <ul class="steps steps-vertical lg:steps-horizontal w-full mt-2">
+        <li class="step step-primary" data-content="1"><div class="px-2"><div class="font-semibold text-sm">吃透聚酯链</div><div class="text-xs text-base-content/60">PX→PTA+EG 上下游最全</div></div></li>
+        <li class="step step-primary" data-content="2"><div class="px-2"><div class="font-semibold text-sm">补原油成本锚</div><div class="text-xs text-base-content/60">理解化工成本端</div></div></li>
+        <li class="step" data-content="3"><div class="px-2"><div class="font-semibold text-sm">烯烃成本切换</div><div class="text-xs text-base-content/60">油/煤/气三路</div></div></li>
+      </ul>
+      <p class="text-sm text-base-content/70 mt-3">本页内容已沉淀到 <code class="text-xs">01-品种/化工板块-总览与产业链.md</code>，可随时复习。</p>
+      <div class="grid gap-2 md:grid-cols-3 mt-2">
+        <div class="rounded-box bg-base-200 p-3 text-sm">"带我把<b>聚酯链</b> PX→PTA→EG 一步步走透。"</div>
+        <div class="rounded-box bg-base-200 p-3 text-sm">"详细讲讲<b>'加工利润是供给调节阀'</b>怎么用来交易。"</div>
+        <div class="rounded-box bg-base-200 p-3 text-sm">"甲醇 MA 为什么是烯烃链的<b>枢纽</b>？"</div>
+      </div>
+      <p class="text-xs text-base-content/50 mt-3">在页面上选中文字/卡片即可批注，告诉我先深入哪条链、或哪里要补充。</p>
+    </div></div>
+  </section>
+
+</main>
+</body>
+</html>

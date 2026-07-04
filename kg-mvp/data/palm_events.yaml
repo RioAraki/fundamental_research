@@ -1,0 +1,3 @@
+# 棕榈油事件日志(append-only)· schema 同 copper_events.yaml,见 docs/SPEC.md §4.3
+# 三层时间标注尚未套用到棕榈油图谱;套用后由流水线填充本文件。
+events: []

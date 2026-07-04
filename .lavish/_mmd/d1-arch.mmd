@@ -1,0 +1,21 @@
+flowchart LR
+  subgraph SRC["事实源 · git 仓库(唯一权威)"]
+    MD["markdown 知识库<br/>(现有 9 品种文档)"]
+    YML["YAML 边表 / 实体表<br/>polarity · lag · strength · condition · evidence"]
+  end
+  subgraph CI["CI 构建(图 = 可再生产物)"]
+    VAL["schema 校验<br/>LinkML / pySHACL / 自写"]
+    BUILD["Python 构建脚本<br/>编译成图"]
+  end
+  subgraph RT["运行时"]
+    G["networkx 内存图<br/>(几百~几千节点)"]
+    R["推理层<br/>PyReason / 自写符号传播"]
+  end
+  subgraph AG["Agent 接入"]
+    MCP["MCP tools<br/>查产业链 · 查影响因素 · 触发推理"]
+    LLM["AI agent<br/>(LLM)"]
+  end
+  MD -->|"提炼/抽取"| YML
+  YML --> VAL --> BUILD --> G
+  G --> R
+  R --> MCP --> LLM
