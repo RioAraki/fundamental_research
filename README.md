@@ -9,6 +9,11 @@
 - **按主题深入**：进入对应文件夹，每个文件是一个独立、自洽的知识点。
 - **复习**：每个文件开头都有「一句话总结」和「关键问题」，扫一眼就能回忆起核心。
 
+## 交接文档（English handoff docs）
+
+- [`METHODOLOGY.md`](./METHODOLOGY.md) — 方法论总纲（why）· interactive: `.lavish/01-methodology-en.html`
+- [`ENGINEERING.md`](./ENGINEERING.md) — 工程落地 + 公司环境准备（how）· interactive: `.lavish/02-engineering-en.html`
+
 ## 目录结构
 
 | 文件夹 | 内容 | 对应"知识地图"层级 |

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="luxury">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI 编辑器 → PR · 设计</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+<style>
+  .cell { min-width: 0; word-break: break-word; }
+  table td, table th { overflow-wrap:anywhere; word-break:break-word; }
+  code { overflow-wrap:anywhere; word-break:break-word; white-space:normal; }
+  p { overflow-wrap:anywhere; }
+  b, strong { display: contents; font-weight: 700; }
+  pre.demo { white-space: pre-wrap; word-break: break-all; font-size: .74rem; line-height: 1.6;
+             background: #14120e; border-radius: .5rem; padding: .8rem; }
+</style>
+</head>
+<body class="bg-base-200 text-base-content">
+<main class="mx-auto w-full max-w-4xl p-5 lg:p-10 cell space-y-6">
+
+  <div class="hero bg-base-100 rounded-box border border-base-content/10">
+    <div class="hero-content text-center py-8 px-4">
+      <div class="max-w-3xl">
+        <div class="badge badge-soft badge-warning mb-3">设计 · 待批注 · 2026-07-04</div>
+        <h1 class="text-3xl font-bold leading-normal px-1">UI 编辑器 → PR:让非技术同事也能维护图谱</h1>
+        <p class="mt-3 text-base-content/70">目标:同事<b>只填表单、不碰 YAML/git</b>;系统把表单变成一个规范的 PR,CI 自动守门,懂行的人点一下 merge。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info"><span><b>三条原则</b>:① 编辑器是<b>表单</b>(下拉/按钮/文本框),不是代码编辑器,没人会看到 YAML 语法;
+  ② 提交产出的是<b>规范 PR</b>(带作者、来源、可 diff、可回滚)——沿用我们定的"PR review = 审批系统";
+  ③ 提交前先跑一遍 CI(schema + golden tests),<b>非技术用户不可能提交出坏图</b>。</span></div>
+
+  <!-- 编辑范围 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">1. 能编辑什么(按频率/风险分三档,分批做)</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>档</th><th>操作</th><th>风险</th><th>技术难点</th><th>次序</th></tr></thead>
+      <tbody>
+        <tr class="bg-success/10"><td>加事件</td><td>加一条新闻/数据事件(选根因+方向+幅度+来源)</td><td>低(append-only,不改机制)</td><td>无——直接追加一行</td><td><b>先做</b></td></tr>
+        <tr><td>改边/改主题</td><td>调边的强度/rationale/condition;改主题 活跃⇄降温⇄休眠</td><td>中(改机制强弱)</td><td>YAML 改现有条目需保留注释(用 ruamel)</td><td>次做</td></tr>
+        <tr><td>加/删 根因或边</td><td>新增根因节点、连新边</td><td>高(改结构)</td><td>结构校验、跨品种一致性</td><td>最后</td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-sm text-base-content/70 mt-2"><b>建议第一版只做「加事件」</b>:它是日常最高频、最安全的操作,正好是"看到新闻 → 录入"的核心工作流,非技术同事天天要做的就是它。改边/加节点随后跟上。</p>
+  </div></div>
+
+  <!-- 表单 mockup -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">2. 「加事件」表单长什么样(mockup)</h2>
+    <p class="text-sm text-base-content/70 mb-3">同事看到的就是这个——全程下拉和按钮,关键是<b>选根因时下面自动显示它的方向语义</b>,不用记 +/− 代表什么:</p>
+    <div class="rounded-box border border-base-content/20 p-4 bg-base-200 max-w-md mx-auto space-y-3">
+      <div><label class="text-xs opacity-70">品种</label><div class="input input-sm input-bordered flex items-center">沪铜(固定)</div></div>
+      <div><label class="text-xs opacity-70">日期(信息可得时刻)</label><div class="input input-sm input-bordered flex items-center">2026-07-06 📅</div></div>
+      <div><label class="text-xs opacity-70">根因(下拉,来自图谱现有节点)</label>
+        <div class="select select-sm select-bordered flex items-center">矿端供给扰动率 ▾</div>
+        <div class="text-xs text-warning/90 mt-1 px-1">↳ 方向语义:+ = 扰动加剧(罢工/事故/关停) / − = 平息、复产超预期</div>
+      </div>
+      <div><label class="text-xs opacity-70">这条消息让它往哪个方向动?</label>
+        <div class="flex gap-2 mt-1">
+          <span class="badge badge-lg" style="background:#b91c1c;color:#fff">● +(扰动加剧)</span>
+          <span class="badge badge-lg badge-outline">○ −(平息)</span>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <div class="flex-1"><label class="text-xs opacity-70">幅度</label><div class="select select-sm select-bordered">中 ▾</div></div>
+        <div class="flex-1"><label class="text-xs opacity-70">影响窗口</label><div class="select select-sm select-bordered">待反转 ▾</div></div>
+      </div>
+      <div><label class="text-xs opacity-70">来源(新闻标题/链接)</label><div class="input input-sm input-bordered flex items-center text-xs">路透:Escondida 工会拒绝报价,罢工风险上升</div></div>
+      <button class="btn btn-sm btn-primary btn-block">预览并提交 PR →</button>
+    </div>
+    <p class="text-sm text-base-content/70 mt-3">点"预览"后,同事看到一句<b>人话摘要</b>和将生成的改动(不是 YAML,是可读的确认):</p>
+    <pre class="demo">将提交 PR:「加事件:矿端供给扰动率 ↑(2026-07-06)」
+  · 品种:沪铜   · 方向:+ 扰动加剧   · 幅度:中   · 窗口:待反转
+  · 来源:路透:Escondida 工会拒绝报价…
+  · 提交人:张三   · 目标文件:data/copper_events.yaml(追加一行)
+  ✅ 校验:schema 通过 · golden tests 通过 · 未破坏反馈环
+  → 生成分支 edit/add-event-20260706-1420,已开 PR #47(等审批 merge)</pre>
+  </div></div>
+
+  <!-- 关键决策:PR 机制 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">3. 【关键决策】PR 到底怎么被创建出来?</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th></th><th class="text-success">A. 后端本地 git + gh(推荐先用)</th><th>B. GitHub App/Token</th><th>C. 变更队列后转 PR</th></tr></thead>
+      <tbody>
+        <tr><td>怎么做</td><td>后端在一个独立 worktree 里建分支→写改动→commit→push→<code>gh pr create</code></td><td>后端用 GitHub API + 服务器上的 token 直接开 PR</td><td>提交先写入待转队列,人工/定时器再批量转 PR</td></tr>
+        <tr><td>现在能用吗</td><td><b>能,零额外配置</b>——本机 gh 已登录(RioAraki)</td><td>要先建 GitHub App / 细粒度 token</td><td>能,但多一道人工</td></tr>
+        <tr><td>上服务器</td><td>服务器要配 git 凭据</td><td><b>生产级最佳</b>(token 存密钥管理)</td><td>队列可跨环境</td></tr>
+        <tr><td>并发安全</td><td>用独立 worktree,不碰运行中的工作区</td><td>API 层无本地状态,最干净</td><td>天然串行</td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-sm mt-2"><b>推荐:代码里抽一个 create_pr(分支, 改动, 标题, 正文) 函数</b>,第一版用 A(本地 gh,现在就能跑),将来上服务器把实现换成 B(token),<b>上层表单代码不用动</b>。这样不被基础设施卡住,又给生产留了路。</p>
+  </div></div>
+
+  <!-- 校验与审批 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">4. 提交前校验 + 谁审批</h2>
+    <ul class="text-sm space-y-2 list-disc pl-5">
+      <li><b>提交前即时校验</b>:后端在临时副本上跑 <code>ci_checks</code>(schema + golden tests + 事件合法性)。加事件极少会失败(顶多根因名不存在,但表单是下拉不可能选错);改边可能触发 golden 失败 → 当场提示"这个改动会让'矿端扰动→利多'的断言失效,请确认",挡在 PR 之前。</li>
+      <li><b>PR 作者</b>:表单里记提交人,写进 commit 的 author 与 PR body,谁提的一目了然。</li>
+      <li><b>审批 = merge</b>:沿用既定的变更分级——加事件/改主题状态(低)可快批甚至自动;改边强度(中)单人审;加删节点(高)双人审。<b>merge 后服务重启/热重载即生效</b>。</li>
+      <li><b>非技术友好的审批界面</b>:审批人也可以不看 GitHub,在站内看"人话摘要 + 校验结果"点通过(站内审批调用同一个 merge)。</li>
+    </ul>
+  </div></div>
+
+  <!-- 决策清单 -->
+  <div class="card card-border bg-base-100"><div class="card-body cell">
+    <h2 class="card-title">5. 待你拍板</h2>
+    <div class="overflow-x-auto"><table class="table table-sm">
+      <thead><tr><th>#</th><th>决策</th><th>推荐</th></tr></thead>
+      <tbody>
+        <tr><td>E1</td><td>第一版编辑范围</td><td><b>只做「加事件」</b>(最高频最安全),改边/主题随后</td></tr>
+        <tr><td>E2</td><td>PR 生成机制</td><td><b>A 本地 gh 起步 + 抽象成可换的函数</b>(将来换 token)</td></tr>
+        <tr><td>E3</td><td>提交前校验</td><td><b>要</b>——临时副本跑 ci_checks,不让坏改动进 PR</td></tr>
+        <tr><td>E4</td><td>审批在哪点</td><td>第一版直接用 GitHub PR 页 merge;站内审批界面 v2 再加</td></tr>
+      </tbody>
+    </table></div>
+  </div></div>
+
+  <div class="alert"><span>🎯 <b>确认即建</b>:v1 编辑器 = 前端「加事件」表单(下拉根因带方向语义 + 预览)+ 后端 <code>POST /api/propose-event</code>(校验→建分支→写 YAML→开 PR 返回链接)。你批"E1-E4 按推荐"或指出要改的,我就动手。</span></div>
+
+</main>
+</body>
+</html>
