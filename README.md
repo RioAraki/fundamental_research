@@ -11,6 +11,7 @@
 
 ## 交接文档（English handoff docs）
 
+- [`AGENTS.md`](./AGENTS.md) — **接手的 coding agent 先读这个**：接着怎么干、规则、读研报的第一步任务
 - [`METHODOLOGY.md`](./METHODOLOGY.md) — 方法论总纲（why）· interactive: `.lavish/01-methodology-en.html`
 - [`ENGINEERING.md`](./ENGINEERING.md) — 工程落地 + 公司环境准备（how）· interactive: `.lavish/02-engineering-en.html`
 
