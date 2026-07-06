@@ -38,8 +38,6 @@ fundamental_research/                ← git 仓库
 │   ├── data/                        ★ 唯一需要人审的层
 │   │   ├── copper.yaml              ← 图谱本体:41 节点(23 根因带 temporal)/55 边(五要素+rationale)
 │   │   ├── copper_events.yaml       ← 事件日志:一个文件多条事件,append-only
-│   │   ├── palm_oil.yaml / palm_events.yaml(棕榈油,三层待套用)
-│   │   ├── olive_oil.yaml           ← MVP 1.0,保留作教学
 │   │   └── feeds/                   ← 数据/新闻输入样例(真实数据源接入前的桩)
 │   ├── docs/SPEC.md(本文)· RUNBOOK.md(操作手册)
 │   ├── build_graph.py               ← YAML→networkx+校验(引擎,品种无关)
@@ -120,7 +118,7 @@ shocks(today) = {root_cause: 最新活跃事件的 direction}
 
 ## 5. 模块规格(I/O 契约)
 
-统一入口:`python cli.py <子命令> [参数]`,所有子命令支持 `--commodity copper|palm`(默认 copper)
+统一入口:`python cli.py <子命令> [参数]`,`--commodity copper`(默认 copper;目前仅沪铜)
 与 `--today YYYY-MM-DD`(point-in-time 纪律:回放历史时必传)。
 
 | 子命令 | 模块 | 输入 | 输出 | 说明 |
@@ -143,7 +141,6 @@ shocks(today) = {root_cause: 最新活跃事件的 direction}
 2. **Golden tests(推理回归)**——保护结构性知识不被误删:
    - 铜:`矿端供给扰动率+1 ⇒ SHFE 净利多`;`美联储政策立场+1 ⇒ SHFE 净利空`;
      `全部入度0根因在9跳内可达 SHFE铜价格`;存在含「沪伦比值→进口流入→中国社会库存」的负反馈环(R3);存在含「精废价差」的环(R1)。
-   - 棕榈油:`产区干旱程度+1 ⇒ DCE 净利多`;存在「印尼出口限制力度⇄印尼国内库存」政策自反环。
 3. **跨品种一致性**:同名共享根因(如 原油价格)在各品种图中 type 必须一致。
 4. **保质期警告**(不阻塞):超期边数量输出。
 

@@ -7,8 +7,7 @@ from build_graph import load
 from events_lib import active_events, current_shocks, load_events, parse_date
 from propagate import propagate, SIGN_TXT
 
-GRAPH = {"copper": ("data/copper.yaml", "SHFE铜价格"),
-         "palm": ("data/palm_oil.yaml", "DCE棕榈油价格")}
+GRAPH = {"copper": ("data/copper.yaml", "SHFE铜价格")}
 BUCKETS = [("0-1 月", 0, 1), ("1-6 月", 1, 6), ("6 月以上", 6, 10 ** 9)]
 
 

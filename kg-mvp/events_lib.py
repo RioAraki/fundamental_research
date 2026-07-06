@@ -8,7 +8,7 @@ import yaml
 from build_graph import LAG_MONTHS
 
 DATA = Path(__file__).parent / "data"
-EVENTS_FILE = {"copper": DATA / "copper_events.yaml", "palm": DATA / "palm_events.yaml"}
+EVENTS_FILE = {"copper": DATA / "copper_events.yaml"}
 
 
 def parse_date(s) -> date:

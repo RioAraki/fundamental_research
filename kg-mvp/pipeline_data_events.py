@@ -11,8 +11,7 @@ from events_lib import append_events
 
 Z_THRESHOLD = 1.5
 FEED = {"copper": Path(__file__).parent / "data" / "feeds" / "cu_indicators.csv"}
-GRAPH = {"copper": Path(__file__).parent / "data" / "copper.yaml",
-         "palm": Path(__file__).parent / "data" / "palm_oil.yaml"}
+GRAPH = {"copper": Path(__file__).parent / "data" / "copper.yaml"}
 
 
 def run(commodity: str, today: str) -> list[str]:

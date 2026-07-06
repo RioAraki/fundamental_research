@@ -2,7 +2,7 @@
 """生成「根因监测面板」HTML 表格行。
 根因是中性状态量:面板对每个根因给出双向定性(+1 时对目标的方向;−1 反之),
 方向语义(+/− 各代表什么现实事件)来自节点 direction 字段。
-用法: python gen_panel.py data/palm_oil.yaml DCE棕榈油价格 out/panel.html
+用法: python gen_panel.py data/copper.yaml SHFE铜价格 out/panel.html
 """
 import html
 import sys

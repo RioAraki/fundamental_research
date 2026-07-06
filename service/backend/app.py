@@ -20,8 +20,7 @@ from build_graph import load  # noqa: E402
 from propagate import propagate  # noqa: E402
 from events_lib import load_events, current_shocks, active_events, parse_date  # noqa: E402
 
-GRAPHS = {"copper": ("data/copper.yaml", "SHFE铜价格"),
-          "palm": ("data/palm_oil.yaml", "DCE棕榈油价格")}
+GRAPHS = {"copper": ("data/copper.yaml", "SHFE铜价格")}
 
 COLOR = {
     "根因·天气": "#7c2d12", "根因·结构": "#57534e", "根因·供给": "#7c2d12",

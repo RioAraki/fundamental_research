@@ -6,8 +6,8 @@
 
 ## Where we are
 
-An end-to-end runnable draft — graph body (SHFE copper 41 nodes / 55 edges, plus palm oil and olive
-oil) + reasoning engine + event system + ops CLI + CI + a web service (FastAPI + React Flow), already
+An end-to-end runnable draft — graph body (SHFE copper, 41 nodes / 55 edges) + reasoning engine +
+event system + ops CLI + CI + a web service (FastAPI + React Flow), already
 on GitHub, CI green, runs locally. **What's missing is the "real data / real reports" integration —
 which is exactly what to do inside the company.**
 

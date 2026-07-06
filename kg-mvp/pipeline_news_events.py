@@ -13,7 +13,7 @@ from build_graph import load
 
 ROOT = Path(__file__).parent
 FEED = {"copper": ROOT / "data" / "feeds" / "news_sample.jsonl"}
-GRAPH = {"copper": ROOT / "data" / "copper.yaml", "palm": ROOT / "data" / "palm_oil.yaml"}
+GRAPH = {"copper": ROOT / "data" / "copper.yaml"}
 QUEUE = ROOT / "out" / "review_queue.yaml"
 UNATTR = ROOT / "out" / "unattributed.yaml"
 

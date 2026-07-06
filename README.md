@@ -1,43 +1,32 @@
-# 大宗商品基本面研究 · 知识库
+# 商品基本面根因知识图谱(沪铜)
 
-> 这是我（你）和 AI 一起搭建的、可随时复习的大宗商品基本面知识库。
-> 你提问 → AI 讲解并提炼 → 知识沉淀到这里的文件。
+> 把研究员的供需传导逻辑,建成**可推理、可维护、可解释**的知识图谱,并配套推理引擎、事件系统、
+> 运维 CLI 与 web 服务。当前落地品种:**沪铜(SHFE CU)**。
 
-## 这个知识库怎么用
+## 交接文档(English handoff docs)
 
-- **想看全局**：先读 [`00-总览-知识地图.md`](./00-总览-知识地图.md)，它是整个领域的"地图"，告诉你每个知识点属于哪一层。
-- **按主题深入**：进入对应文件夹，每个文件是一个独立、自洽的知识点。
-- **复习**：每个文件开头都有「一句话总结」和「关键问题」，扫一眼就能回忆起核心。
-
-## 交接文档（English handoff docs）
-
-- [`AGENTS.md`](./AGENTS.md) — **接手的 coding agent 先读这个**：接着怎么干、规则、读研报的第一步任务
-- [`METHODOLOGY.md`](./METHODOLOGY.md) — 方法论总纲（why）· interactive: `.lavish/01-methodology-en.html`
-- [`ENGINEERING.md`](./ENGINEERING.md) — 工程落地 + 公司环境准备（how）· interactive: `.lavish/02-engineering-en.html`
+- [`AGENTS.md`](./AGENTS.md) — **接手的 coding agent 先读这个**:接着怎么干、规则、读研报的第一步任务
+- [`METHODOLOGY.md`](./METHODOLOGY.md) — 方法论总纲(why)· interactive: `.lavish/01-methodology-en.html`
+- [`ENGINEERING.md`](./ENGINEERING.md) — 工程落地 + 公司环境准备(how)· interactive: `.lavish/02-engineering-en.html`
 
 ## 目录结构
 
-| 文件夹 | 内容 | 对应"知识地图"层级 |
-|---|---|---|
-| `01-品种/` | 各大宗商品是什么、产业链、谁产谁用 | L1 认识标的 |
-| `02-分析框架/` | 供需平衡表、库存、成本曲线 | L2 核心框架 |
-| `03-价格结构/` | 现货/期货、基差、期限结构、升贴水 | L3 价格的语言 |
-| `04-驱动因素/` | 宏观、政策、季节性、天气、资金 | L4 驱动因素 |
-| `05-数据源/` | 各品种的关键数据从哪看 | L5 信息源 |
-| `06-决策方法/` | 怎么从研究形成观点、套利、风控 | L6 从研究到决策 |
-| `99-问答记录/` | 我们对话中产生的零散问答，按日期归档 | — |
-| **`kg-mvp/`** | **根因知识图谱 + 推理引擎 + 事件流水线与运维 CLI**（沪铜/棕榈油/橄榄油），见其 `docs/SPEC.md` 与 `docs/RUNBOOK.md` | 知识库的结构化层 |
-| **`service/`** | **web 服务:FastAPI 后端 + React Flow 前端**（沪铜交互图谱与情景推演），见其 `README.md` | 产品 UI |
-| `.lavish/` | 交互式 dashboard 与设计文档（可批注 HTML） | 设计白板 |
+| 目录 | 内容 |
+|---|---|
+| **`kg-mvp/`** | 引擎 + 知识 + 运维:图谱本体 YAML(`data/copper.yaml`)、推理引擎、事件流水线、运维 CLI、CI 质量门;见 `docs/SPEC.md` 与 `docs/RUNBOOK.md` |
+| **`service/`** | web 服务:FastAPI 后端 + React Flow 前端(沪铜交互图谱与情景推演);见其 `README.md` |
+| `.lavish/` | 交互式 dashboard 与设计文档(可批注 HTML) |
 
-## 工作约定（AI 遵守）
+## 快速开始
 
-1. 我每次讲解一个知识点，都会：先讲清**直觉/本质**，再讲**机制**，最后给**怎么用**。
-2. 讲完后把它沉淀成一个独立 md 文件，开头有「一句话总结 + 关键问题」。
-3. 新概念尽量和已有文件交叉引用，形成网络。
-4. 涉及"判断/选型/对比"时，优先用可视化（lavish HTML）让你直接批注。
+```powershell
+pip install networkx pyyaml fastapi "uvicorn[standard]"
+cd kg-mvp && python cli.py ci            # 质量门,应全绿
+python cli.py morning --today 2026-07-06 # 晨报(分时段结论)
 
-## 进度
+# web 服务
+cd service/frontend && npm install && npm run build
+cd ../backend && python -m uvicorn app:app --port 8000   # 打开 http://localhost:8000
+```
 
-- [x] 搭建知识库骨架 + 总览知识地图（2026-06-26）
-- [ ] 待你提出第一批问题……
+详见 `AGENTS.md`(接手指南)、`kg-mvp/docs/RUNBOOK.md`(命令)、`service/README.md`(服务)。

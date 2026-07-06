@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""沪铜演示传导子图 mermaid(同 gen_demo_mermaid.py 逻辑,铜场景)。输出 out/cu_demo1..5.mmd"""
+"""沪铜演示传导子图 mermaid:每个情景冲击只画实际走过的路径。输出 out/cu_demo1..5.mmd"""
 import sys
 from pathlib import Path
 

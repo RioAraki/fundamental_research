@@ -73,7 +73,7 @@ def load(path: str | Path) -> nx.DiGraph:
 
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
-    g = load(Path(__file__).parent / "data" / "olive_oil.yaml")
+    g = load(Path(__file__).parent / "data" / "copper.yaml")
     print(f"校验通过:{g.number_of_nodes()} 节点 / {g.number_of_edges()} 边")
     roots = [n for n in g.nodes if g.in_degree(n) == 0]
     print("根因节点(入度0):", ", ".join(roots))

@@ -6,8 +6,7 @@ from build_graph import load
 from events_lib import current_shocks, load_events
 from propagate import propagate
 
-GRAPH = {"copper": ("data/copper.yaml", "SHFE铜价格"),
-         "palm": ("data/palm_oil.yaml", "DCE棕榈油价格")}
+GRAPH = {"copper": ("data/copper.yaml", "SHFE铜价格")}
 
 
 def run(commodity: str, today) -> list[str]:

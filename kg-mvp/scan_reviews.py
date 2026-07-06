@@ -5,7 +5,7 @@ from pathlib import Path
 
 from build_graph import load
 
-GRAPH = {"copper": "data/copper.yaml", "palm": "data/palm_oil.yaml"}
+GRAPH = {"copper": "data/copper.yaml"}
 OVERDUE_MONTHS = 12
 
 

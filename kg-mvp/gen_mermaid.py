@@ -23,7 +23,7 @@ TYPE_CLASS = {
     "价差": "spread", "情绪": "senti", "价格": "price",
 }
 
-src = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "data" / "olive_oil.yaml"
+src = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "data" / "copper.yaml"
 dst = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(__file__).parent / "out" / "graph.mmd"
 
 INIT = ('%%{init: {"theme":"dark","themeVariables":{"lineColor":"#38bdf8",'

@@ -2,7 +2,7 @@
 """生成交互探索页数据(JSON):
 - 每个节点:含义、direction、signals、case + 预计算「该量↑对 DCE P 的方向与最强路径」(利好利空判定)
 - 每条边:五要素 + rationale + 自动生成的机制解释句
-用法: python gen_explore.py data/palm_oil.yaml DCE棕榈油价格 out/explore_data.json
+用法: python gen_explore.py data/copper.yaml SHFE铜价格 out/explore_data.json
 """
 import json
 import sys

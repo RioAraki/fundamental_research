@@ -1,5 +1,5 @@
 # 中国沪铜期货(SHFE CU)基本面因果知识图谱 · 事实源(KG-as-code)
-# 方法论同 palm_oil.yaml v0.2:
+# 方法论(见 METHODOLOGY.md):
 #   根因 = 中性状态量(direction 说明 +/− 语义),图存机制、新闻定方向(±1 冲击);
 #   根因定性、新闻和数据定量(signals = 监测新闻关键词 + 数据源)。
 meta:

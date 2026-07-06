@@ -34,9 +34,7 @@ def has_cycle_containing(G, must_nodes: set) -> bool:
 def main() -> int:
     # ── 1. Schema(load 内部 sys.exit(1) 即失败)──
     cu = load(ROOT / "data" / "copper.yaml")
-    pm = load(ROOT / "data" / "palm_oil.yaml")
     check("schema: copper.yaml", True, f"{cu.number_of_nodes()} 节点/{cu.number_of_edges()} 边")
-    check("schema: palm_oil.yaml", True, f"{pm.number_of_nodes()} 节点/{pm.number_of_edges()} 边")
 
     # ── 2. Golden tests · 铜 ──
     check("golden(cu): 矿端供给扰动率+1 ⇒ SHFE 净利多",
@@ -51,14 +49,8 @@ def main() -> int:
           has_cycle_containing(cu, {"沪伦比值", "进口流入", "中国社会库存"}))
     check("golden(cu): R1 精废替代环存在", has_cycle_containing(cu, {"精废价差"}))
 
-    # ── Golden tests · 棕榈油 ──
-    check("golden(palm): 产区干旱程度+1 ⇒ DCE 净利多",
-          net_sign(pm, {"产区干旱程度": 1}, "DCE棕榈油价格") > 0)
-    check("golden(palm): 印尼出口限制政策自反环存在",
-          has_cycle_containing(pm, {"印尼出口限制力度", "印尼国内库存"}))
-
     # ── 3. 事件日志校验 ──
-    for commodity, G in (("copper", cu), ("palm", pm)):
+    for commodity, G in (("copper", cu),):
         try:
             events = load_events(commodity)
         except FileNotFoundError:
@@ -77,12 +69,7 @@ def main() -> int:
         except Exception as ex:
             check(f"events({commodity}): 时间可解析", False, str(ex))
 
-    # ── 4. 跨品种一致性:同名根因 type 必须一致 ──
-    shared = {n for n in cu.nodes} & {n for n in pm.nodes}
-    diff = [n for n in shared if cu.nodes[n].get("type") != pm.nodes[n].get("type")]
-    check("跨品种: 共享节点 type 一致", not diff, f"共享{sorted(shared)} 不一致{diff}")
-
-    # ── 5. 保质期警告(不阻塞)──
+    # ── 4. 保质期警告(不阻塞)──
     never = sum(1 for _, _, d in cu.edges(data=True) if not d.get("review"))
     print(f"ℹ️ 提醒(不阻塞): copper 从未审校的边 {never}/{cu.number_of_edges()} 条(scan_reviews 出清单)")
 

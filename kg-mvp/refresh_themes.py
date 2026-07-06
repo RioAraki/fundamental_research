@@ -6,7 +6,7 @@ from pathlib import Path
 from build_graph import load
 from events_lib import load_events, parse_date
 
-GRAPH = {"copper": "data/copper.yaml", "palm": "data/palm_oil.yaml"}
+GRAPH = {"copper": "data/copper.yaml"}
 
 
 def suggest(count: int) -> str:
