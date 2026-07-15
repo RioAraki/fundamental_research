@@ -1,9 +1,61 @@
 <mxfile host="app.diagrams.net">
   <diagram name="第 1 页" id="-Y137GQ_-Cw5z7RGIrcm">
-    <mxGraphModel>
+    <mxGraphModel dx="822" dy="441" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="J9n-yo7wrZcu-b2uscua-7" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;curved=1;fillColor=#d5e8d4;strokeColor=#82b366;" target="J9n-yo7wrZcu-b2uscua-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="rumor (text or graph)" vertex="1">
+          <mxGeometry height="35" width="107.5" x="9" y="54.5" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-9" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;curved=1;fillColor=#fff2cc;strokeColor=#d6b656;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="J9n-yo7wrZcu-b2uscua-8" value="manual">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-32" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-3" style="edgeStyle=orthogonalEdgeStyle;shape=connector;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#fff2cc;" target="J9n-yo7wrZcu-b2uscua-5" value="gradually move to">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="non sturctural data (report or chart) from website / email" vertex="1">
+          <mxGeometry height="61" width="108.5" x="8" y="152" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-20" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-5" style="edgeStyle=orthogonalEdgeStyle;shape=connector;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#d5e8d4;" target="J9n-yo7wrZcu-b2uscua-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="data via api" vertex="1">
+          <mxGeometry height="51" width="108.5" x="8" y="302" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-6" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="slack" vertex="1">
+          <mxGeometry height="38" width="74" x="210" y="53" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-8" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="balance sheet" vertex="1">
+          <mxGeometry height="38" width="74" x="210" y="157" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-16" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" value="team" vertex="1">
+          <mxGeometry height="40" width="42" x="483" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-17" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-6" style="edgeStyle=orthogonalEdgeStyle;shape=connector;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#d5e8d4;" target="J9n-yo7wrZcu-b2uscua-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="323" y="73" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-19" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="databricks" vertex="1">
+          <mxGeometry height="38" width="74" x="210" y="262" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-26" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="dashboard" vertex="1">
+          <mxGeometry height="38" width="74" x="467" y="264" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-29" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-3" style="edgeStyle=orthogonalEdgeStyle;shape=connector;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.005;entryY=0.405;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#d6b656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;dashed=1;dashPattern=8 8;fillColor=#fff2cc;" target="J9n-yo7wrZcu-b2uscua-19" value="script">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-30" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-8" style="edgeStyle=orthogonalEdgeStyle;shape=connector;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d6b656;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;fillColor=#fff2cc;dashed=1;dashPattern=8 8;" target="J9n-yo7wrZcu-b2uscua-16" value="maintained by one,&lt;br&gt;can be shared by partially...">
+          <mxGeometry relative="1" x="-0.0608" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J9n-yo7wrZcu-b2uscua-31" edge="1" parent="1" source="J9n-yo7wrZcu-b2uscua-19" style="edgeStyle=orthogonalEdgeStyle;shape=connector;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.032;entryY=0.468;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=classic;" target="J9n-yo7wrZcu-b2uscua-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
