@@ -69,7 +69,24 @@ def main() -> int:
         except Exception as ex:
             check(f"events({commodity}): 时间可解析", False, str(ex))
 
-    # ── 4. 保质期警告(不阻塞)──
+    # ── 4. L1 覆盖度(SPEC §L1)──
+    # 硬失败:科目表指向了图中不存在的节点(两份事实源不一致,必须修)
+    # 软告警:必备科目/库存池未建模(结构盲点,靠 PR 逐步补,不阻塞)
+    import check_coverage as cov
+    bal = cov._load_balance("copper")
+    broken = [a["id"] for _, a in cov._accounts(bal)
+              if a.get("node") and a["node"] not in cu]
+    check("coverage(cu): 科目表与图谱映射一致", not broken, f"指向不存在的节点: {broken}")
+
+    must = [(t, a) for t, a in cov._accounts(bal) if a.get("must")]
+    must_gap = [a["id"] for _, a in must if not a.get("node")]
+    pools = bal.get("inventory_pools", [])
+    pool_ok = sum(1 for p in pools if p.get("node") and p["node"] in cu)
+    print(f"ℹ️ 提醒(不阻塞): copper 必备科目覆盖 {len(must)-len(must_gap)}/{len(must)}"
+          f",库存池 {pool_ok}/{len(pools)};缺口: {', '.join(must_gap) if must_gap else '无'}"
+          f"(cli.py coverage 出完整报告)")
+
+    # ── 5. 保质期警告(不阻塞)──
     never = sum(1 for _, _, d in cu.edges(data=True) if not d.get("review"))
     print(f"ℹ️ 提醒(不阻塞): copper 从未审校的边 {never}/{cu.number_of_edges()} 条(scan_reviews 出清单)")
 

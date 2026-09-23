@@ -38,6 +38,8 @@ fundamental_research/                ← git 仓库
 │   ├── data/                        ★ 唯一需要人审的层
 │   │   ├── copper.yaml              ← 图谱本体:41 节点(23 根因带 temporal)/55 边(五要素+rationale)
 │   │   ├── copper_events.yaml       ← 事件日志:一个文件多条事件,append-only
+│   │   ├── copper_scope.yaml        ← L0 界定层:标的/交割/币种税/计价基准 + 定价链断点(§9)
+│   │   ├── copper_balance.yaml      ← L1 定性平衡表科目表:先验完整科目清单 + 库存五池 + 通道(§9)
 │   │   └── feeds/                   ← 数据/新闻输入样例(真实数据源接入前的桩)
 │   ├── docs/SPEC.md(本文)· RUNBOOK.md(操作手册)
 │   ├── build_graph.py               ← YAML→networkx+校验(引擎,品种无关)
@@ -53,6 +55,7 @@ fundamental_research/                ← git 仓库
 │   ├── detect_anomaly.py            ← 行情驱动异常检测
 │   ├── refresh_themes.py            ← 主题热度刷新(事件密度)
 │   ├── scan_reviews.py              ← 边保质期扫描
+│   ├── check_coverage.py            ← L1 覆盖度体检(科目表 ⊖ 图谱 = 结构盲点)
 │   ├── ci_checks.py                 ← CI 质量门(schema+golden tests+跨品种一致性)
 │   ├── gen_*.py / ask_*.py / inject_*.py ← dashboard 生成链(既有)
 │   └── out/                         ← 构建产物,git 忽略
@@ -132,6 +135,7 @@ shocks(today) = {root_cause: 最新活跃事件的 direction}
 | `anomaly` | detect_anomaly | `data/feeds/cu_price.csv`(date,close)+ 事件日志 | `out/anomaly_report.md` + `out/event_price_pairs.csv` | 触发\|r\|>2.5σ(60日);三分类:一致(记配对)/无解释(issue)/方向失灵(边待校准);反向:大事件无反应→计价死亡建议 |
 | `themes` | refresh_themes | 事件日志(90 天窗口) | `out/theme_suggestions.md`:事件密度 vs 当前 status 的升降档建议(L1 级,人秒批) | 每周 |
 | `reviews` | scan_reviews | 图 | `out/review_overdue.md`:无 review 字段或超 12 个月未审的边清单 | 每月 |
+| `coverage` | check_coverage | 图 + `data/<c>_balance.yaml` + `_scope.yaml` | `out/coverage_report.md`:科目缺口/无驱动科目/悬空根因/库存池/通道缺口/文字-结构背离/L0 定价链断点 | 见 §9;每季或建图后 |
 | `ci` | ci_checks | 两份图+两份事件日志 | 退出码 0/1;stdout 报告 | 见 §6 |
 | `dashboard` | 既有 gen 链 | 图+事件 | 重建 copper dashboard 全部产物并注入 | 边表变更后运行 |
 
@@ -142,7 +146,10 @@ shocks(today) = {root_cause: 最新活跃事件的 direction}
    - 铜:`矿端供给扰动率+1 ⇒ SHFE 净利多`;`美联储政策立场+1 ⇒ SHFE 净利空`;
      `全部入度0根因在9跳内可达 SHFE铜价格`;存在含「沪伦比值→进口流入→中国社会库存」的负反馈环(R3);存在含「精废价差」的环(R1)。
 3. **跨品种一致性**:同名共享根因(如 原油价格)在各品种图中 type 必须一致。
-4. **保质期警告**(不阻塞):超期边数量输出。
+4. **L1 覆盖度**:
+   - 硬失败:`_balance.yaml` 的 `node` 指向图中不存在的节点(两份事实源不一致)。
+   - 软告警(不阻塞):必备科目覆盖数、库存池覆盖数、缺口清单。
+5. **保质期警告**(不阻塞):超期边数量输出。
 
 ## 7. 验收标准
 
@@ -152,6 +159,7 @@ shocks(today) = {root_cause: 最新活跃事件的 direction}
 - `morning` 产出含三时段结论与活跃事件清单的 markdown。
 - `advocate --stance 多` 至少列出一条含「硫酸价格」的反方路径(2026 年真实分歧)。
 - `anomaly` 对样例价格:识别出 ≥2 天超阈值异动并给出正确分类与解释事件(三分类代码路径均存在;样例数据当前两天均为"有解释",因事件日志补全了美联储 2024.9 降息反转与 232 豁免两条真实事件)。
+- `coverage` 产出 `out/coverage_report.md`,含七项检查;CI 中"科目表与图谱映射一致"为绿。
 - push 到 GitHub 后,Actions 的 CI 运行通过(或本地等效运行通过)。
 
 ## 8. 明确不在本期(防 scope creep)
@@ -161,3 +169,40 @@ shocks(today) = {root_cause: 最新活跃事件的 direction}
 - condition 参与推理剪枝、事件幅度进入传播权重
 - MCP server 封装(CLI 即当前 agent 接口)
 - 回测校准框架(factor_rule/validation 字段已预留,方法论见甲醇报告页)
+
+## 9. L1 覆盖度体检(结构盲点机制)
+
+方法论见 `METHODOLOGY.md` §5④ 与 §6。要点:
+
+- 图谱是**开放式**结构,永远无法自证完备;平衡表科目空间是**封闭**的,所以缺口可枚举。
+- **我们做定性研究,不追求吨数精度** —— 科目表只用来划定"影响价格的东西必须落在哪些格子里"。
+- `_balance.yaml` 是**先验清单**(机构平衡表科目的并集),必须手工维护,**不允许从图谱反向生成**——
+  反向生成会让 diff 恒为空,机制自动失效。
+
+### 9.1 schema
+
+```yaml
+tables:                          # 恒等式分表(精矿/精炼铜·中国/精炼铜·全球/终端消费)
+  - id: 精炼铜·中国
+    identity: "期初库存 + 精炼产量 + 净进口 + 废铜直接利用 = 表观消费 + 铜材出口 + 期末库存"
+    tension_price: 现货升贴水    # 该表松紧的价格表达
+    accounts:
+      - {id: 中国精炼产量, side: 供给|需求|库存, node: 中国精铜产量, must: true, note/gap: "...",
+         signals: {data: [...]}}   # node: null = 结构缺口
+inventory_pools:                 # 五池加总校验的前提;字段同 accounts,另有 visibility: 显性|半显性|隐性|不可见
+channels:                        # 不改变量、只改变"同样的量对应什么价"的通道
+  - {id: 估值通道, layer: L2, meaning: "...", nodes: [已建模节点], missing: [{id, gap}]}
+residual_rules:                  # 定性配平规则(不需要数字):方向自洽/库存池闭合/表观与真实背离/结构证伪
+```
+
+### 9.2 七项检查
+
+| # | 检查 | 判据 | 含义 |
+|---|---|---|---|
+| 1 | 科目未建模 | `node: null` | 世界上有、图里没有(`must: true` 为严重) |
+| 2 | 映射失效 | `node` 不在图中 | 两份事实源不一致 → CI 硬失败 |
+| 3 | 科目无驱动 | 科目节点入度 0 且非根因 | 建了空盒子,从没研究过它为什么变 |
+| 4 | 悬空根因 | 9 跳内到不了任何科目/通道节点 | 改不了量也改不了价 → 修辞而非机制 |
+| 5 | 库存池缺口 | 池 `node: null` | "是哪一池在动"这个问题无法回答 |
+| 6 | 通道缺口 | `channels[].missing` | L0/L2/L3/L4 已知未建模项 |
+| 7 | 文字-结构背离 | 关键词在 rationale/evidence 中反复出现却无同名节点 | 机制写在文字里,推理引擎看不见 |

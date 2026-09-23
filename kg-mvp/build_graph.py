@@ -62,6 +62,7 @@ def load(path: str | Path) -> nx.DiGraph:
             condition=e.get("condition", ""),
             evidence=e.get("evidence", ""),
             rationale=e.get("rationale", ""),
+            review=e.get("review", {}),
         )
 
     if errors:

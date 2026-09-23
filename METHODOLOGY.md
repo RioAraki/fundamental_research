@@ -158,3 +158,61 @@ are what your view must overcome to hold.
 *Example (pricing-death)*: in 2025 the "Section 232 tariff" theme first made COMEX swing on every
 headline; later tariff news kept coming but price barely reacted → sensitivity ≈ 0 → recommend
 downgrading (market has digested it), stop trading it as an active narrative.
+
+### ④ Structural-gap scan — cures "I never modeled that at all" (structural blind spot)
+
+**Why the first three are not enough**: mechanisms ①–③ all presuppose *the thing is already in the
+graph* — the dormant sweep needs the node to exist, counter-paths and shelf-life need the edge to
+exist. They cure **attention** blind spots. They cannot cure **structural** blind spots: "I never
+built logistics at all." An open-ended causal graph has no closure property, so *"have I missed
+something?" is unanswerable by construction* — you can always add one more node, and nothing tells
+you when to stop.
+
+**How it works**: check the graph against a **closed account space** — a qualitative balance sheet
+(§6). Any factor that moves price must either (a) move some account, or (b) travel through an
+explicitly declared L0/L2/L3/L4 channel. So the question becomes enumerable:
+
+- accounts with `node: null` → **the account exists in the world but not in the graph**;
+- accounts modeled but with in-degree 0 → an empty box: present, never explained;
+- root causes that reach no account and no channel within 9 hops → **rhetoric, not mechanism**;
+- inventory pools not covered → the "which pool moved?" question becomes unanswerable;
+- words repeatedly used in `rationale`/`evidence` but matching no node → **mechanism written in prose,
+  invisible to the engine** (the most insidious kind: readers assume it was considered).
+
+Run: `python cli.py coverage` → `out/coverage_report.md`. Wired into CI as a soft warning; a broken
+account→node mapping is a hard failure.
+
+## 6. The container: a qualitative balance sheet as a closed account space
+
+The knowledge graph is **not** the top-level container of fundamental research — it is one layer of it.
+Institutional research (sell-side annual outlooks, IEA OMR, chemical prosperity frameworks) does not
+guarantee completeness with longer checklists; it does so with an **accounting identity**:
+
+```
+opening stock + production + imports  =  consumption + exports + closing stock
+```
+
+The value is not the resulting number — **we work qualitatively and deliberately do not chase tonnage
+precision**. The value is that the identity defines a **closed space of accounts**, which yields:
+
+1. **A completeness criterion.** Six accounts; for each, have I listed what drives it? "Did I miss
+   something" becomes checkable instead of unanswerable.
+2. **Qualitative residual diagnosis** (no numbers needed). If supply accounts read "loose" and demand
+   accounts read "weak", inventory *must* read "building". If observed inventory is drawing instead,
+   either an account was judged backwards or **an unmodeled account is at work**.
+3. **Logistics stops being optional.** It occupies three mandatory positions: the time/friction of the
+   import–export accounts, the **splitting of inventory into pools** (exchange / bonded / social /
+   plant / **in-transit**), and the regional-spread-vs-freight arbitrage gate. Pools must account for
+   total inventory; if you cannot say *which pool* moved, that pool is unmodeled.
+
+**Files**: `data/<commodity>_scope.yaml` (L0: contract spec, delivery location, currency & tax,
+pricing basis, and the explicit translation chain from the global price to the local contract) and
+`data/<commodity>_balance.yaml` (L1: account tables, inventory pools, non-balance-sheet channels,
+qualitative residual rules). Both are prior, hand-maintained lists — **the union of institutional
+balance-sheet line items**, not something derived from the graph. That priority is what makes the
+diff meaningful.
+
+**What this does not fix**: the identity constrains *quantities*, not *prices* — the same deficit can
+produce very different price reactions depending on inventory level, curve structure and positioning
+(that is what the L2/L3/L4 channels are for). And a wrong account table still balances (the residual
+absorbs it), so the account list itself needs periodic review against outside sources.

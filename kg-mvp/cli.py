@@ -18,7 +18,7 @@ def main():
     ap = argparse.ArgumentParser(description="商品根因知识图谱 · 运维与使用 CLI")
     ap.add_argument("command", choices=[
         "ingest-data", "ingest-news", "approve", "morning", "conflicts",
-        "advocate", "anomaly", "themes", "reviews", "ci", "dashboard"])
+        "advocate", "anomaly", "themes", "reviews", "coverage", "ci", "dashboard"])
     ap.add_argument("--commodity", default="copper", choices=["copper"])
     ap.add_argument("--today", default=None, help="YYYY-MM-DD(point-in-time,回放历史必传)")
     # approve 专用
@@ -69,6 +69,9 @@ def main():
         out = m.run(a.commodity, today)
     elif a.command == "reviews":
         import scan_reviews as m
+        out = m.run(a.commodity, today)
+    elif a.command == "coverage":
+        import check_coverage as m
         out = m.run(a.commodity, today)
     elif a.command == "ci":
         import ci_checks
